@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+/*
+ * Tokens de marca — Roberto el Diablo
+ * Úsalos como utilidades de Tailwind: bg-negro, text-crema, border-rojo, etc.
+ */
+@theme {
+  --color-negro: #151515;
+  --color-crema: #f0e9df;
+  --color-rojo: #a83d3a;
+
+  /*
+   * Exclusivo de la campaña "Días de Naranja".
+   * No usar como color principal de la marca.
+   */
+  --color-dias-de-naranja: #e96720;
+}
+
+/* Roles semánticos: cambia aquí la paleta base sin tocar los componentes. */
+@theme inline {
+  --color-background: var(--color-crema);
+  --color-foreground: var(--color-negro);
+  --color-accent: var(--color-rojo);
+
+  --font-sans: var(--font-body);
+  --font-display: var(--font-heading);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
