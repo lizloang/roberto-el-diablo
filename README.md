@@ -39,14 +39,15 @@ cp .env.example .env.local   # completar cuando exista el proyecto de Sanity
 
 ## Rutas
 
-| Ruta      | Página                 |
-| --------- | ---------------------- |
-| `/`       | Inicio                 |
-| `/musica` | Discografía            |
-| `/shows`  | Próximos conciertos    |
-| `/merch`  | Mercancía              |
-| `/banda`  | Historia e integrantes |
-| `/prensa` | Material para prensa   |
+| Ruta      | Página                                  |
+| --------- | --------------------------------------- |
+| `/`       | Inicio                                  |
+| `/musica` | Discografía                             |
+| `/shows`  | Próximos conciertos                     |
+| `/merch`  | Mercancía                               |
+| `/banda`  | Historia e integrantes                  |
+| `/prensa` | Material para prensa                    |
+| `/studio` | Panel de administración (Sanity Studio) |
 
 ## Estructura
 
@@ -67,7 +68,8 @@ src/
     env.ts          Variables de entorno de Sanity
     lib/client.ts   Cliente de Sanity
     lib/image.ts    Helper `urlFor` para imágenes
-    schemaTypes/    Esquemas de contenido (vacío por ahora)
+    structure.ts    Menú lateral del Studio
+    schemaTypes/    Esquemas de contenido (documents/ y objects/)
 sanity.config.ts    Configuración del Studio
 sanity.cli.ts       Configuración del CLI de Sanity
 ```
@@ -91,10 +93,38 @@ Tipografía provisional cargada con `next/font` en `src/app/layout.tsx`:
 
 ## Sanity
 
-La configuración está lista pero **sin proyecto conectado**. Para conectarlo:
+Para trabajar con contenido, copia `.env.example` a `.env.local` y completa el
+Project ID (disponible en [sanity.io/manage](https://www.sanity.io/manage)).
+`src/sanity/env.ts` lanza un error claro si faltan las variables.
 
-1. Crear el proyecto en [sanity.io/manage](https://www.sanity.io/manage).
-2. Completar `NEXT_PUBLIC_SANITY_PROJECT_ID` y `NEXT_PUBLIC_SANITY_DATASET` en `.env.local`.
-3. Definir los esquemas en `src/sanity/schemaTypes/`.
+### Esquemas (`src/sanity/schemaTypes/`)
 
-`src/sanity/env.ts` lanza un error claro si se usa el cliente sin estas variables.
+| Tipo           | Panel                | Uso                                                        |
+| -------------- | -------------------- | ---------------------------------------------------------- |
+| `album`        | Lanzamiento          | Álbum, EP o sencillo: portada, fecha, canciones, enlaces   |
+| `song`         | Canción              | Duración, letra, créditos, enlaces                         |
+| `show`         | Concierto            | Fecha, lugar, ciudad, estado, boletos                      |
+| `member`       | Integrante           | Nombre, rol, foto, biografía, orden, actual/exintegrante   |
+| `product`      | Producto             | Mercancía: categoría, imágenes, precio MXN, tallas, compra |
+| `bandInfo`     | Historia de la banda | Documento único: historia y fotos                          |
+| `pressKit`     | Kit de prensa        | Documento único: biografías, fotos, archivos, contacto     |
+| `pressArticle` | Nota de prensa       | Notas y reseñas publicadas por medios                      |
+
+Objetos reutilizables: `blockContent` (texto enriquecido), `imageWithAlt`
+(imagen con texto alternativo y crédito) y `platformLink` (enlace a plataforma).
+
+Para validar los esquemas:
+
+```bash
+npx sanity schemas validate
+```
+
+### Panel de administración
+
+El Studio está integrado en el sitio en [`/studio`](http://localhost:3000/studio)
+(configuración en `sanity.config.ts`). Para entrar se necesita una cuenta de Sanity
+invitada al proyecto. En producción, agrega el dominio del sitio en
+**sanity.io/manage → API → CORS origins** con _Allow credentials_ activado.
+
+"Historia de la banda" y "Kit de prensa" son documentos únicos: no se pueden
+duplicar ni eliminar desde el panel.
