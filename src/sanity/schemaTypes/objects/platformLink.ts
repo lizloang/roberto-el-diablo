@@ -1,17 +1,5 @@
 import { defineField, defineType } from "sanity";
-
-const PLATFORMS = [
-  { title: "Spotify", value: "spotify" },
-  { title: "Apple Music", value: "appleMusic" },
-  { title: "YouTube", value: "youtube" },
-  { title: "YouTube Music", value: "youtubeMusic" },
-  { title: "Amazon Music", value: "amazonMusic" },
-  { title: "Deezer", value: "deezer" },
-  { title: "Tidal", value: "tidal" },
-  { title: "Bandcamp", value: "bandcamp" },
-  { title: "SoundCloud", value: "soundcloud" },
-  { title: "Otro", value: "other" },
-];
+import { PLATFORMS } from "@/sanity/platforms";
 
 // Enlace a una plataforma de streaming o tienda digital.
 export const platformLink = defineType({
