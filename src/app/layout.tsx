@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Inter, Instrument_Serif } from "next/font/google";
+import { Anton, Manrope } from "next/font/google";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
-// Tipografía base provisional: cambia las fuentes aquí; los tokens
-// --font-sans y --font-display en globals.css no necesitan cambios.
-const body = Inter({
+// Tipografías del sistema de diseño en Figma: Manrope (texto) y Anton
+// (títulos). Los tokens --font-sans y --font-display en globals.css no
+// necesitan cambios.
+const body = Manrope({
   variable: "--font-body",
   subsets: ["latin"],
 });
 
-const heading = Instrument_Serif({
+const heading = Anton({
   variable: "--font-heading",
   subsets: ["latin"],
   weight: "400",

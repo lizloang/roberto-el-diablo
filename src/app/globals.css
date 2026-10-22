@@ -18,8 +18,8 @@
 
 /* Roles semánticos: cambia aquí la paleta base sin tocar los componentes. */
 @theme inline {
-  --color-background: var(--color-crema);
-  --color-foreground: var(--color-negro);
+  --color-background: var(--color-negro);
+  --color-foreground: var(--color-crema);
   --color-accent: var(--color-rojo);
 
   --font-sans: var(--font-body);
@@ -30,4 +30,201 @@ body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/*
+ * Cursor: la cara del diablo, con el punto activo en el centro. También en
+ * enlaces y botones, que si no vuelven a la mano del sistema. Los campos de
+ * texto conservan su cursor. Va fuera de capa para ganarle a cursor-pointer.
+ */
+html,
+a,
+button,
+label,
+summary,
+[role="button"],
+.cursor-pointer {
+  cursor:
+    url("/images/cursor/diablo.png") 18 20,
+    auto;
+  cursor:
+    image-set(
+        url("/images/cursor/diablo.png") 1x,
+        url("/images/cursor/diablo@2x.png") 2x
+      )
+      18 20,
+    auto;
+}
+
+/*
+ * Discografía: portadas sobre la pared. La seleccionada se enciende con luz
+ * de neón roja: --niche-neon va de 0 a 1 y se registra con @property para
+ * que la transición sea continua.
+ */
+@property --niche-neon {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@layer components {
+  /* Mismo negro liso que el hero, sin textura ni degradado. */
+  .niche-wall {
+    background-color: var(--color-negro);
+  }
+
+  /* Rejilla de portadas sobre la pared, casi pegadas. */
+  .niche-shelf {
+    gap: 8px;
+  }
+
+  .niche-cell {
+    --niche-neon: 0;
+    position: relative;
+    transition: --niche-neon 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Se enciende al pasar el cursor, con el foco de teclado o seleccionada.
+     Queda encima de sus vecinas para que el halo se extienda sobre la pared. */
+  .niche-cell:hover,
+  .niche-cell:focus-visible,
+  .niche-cell[data-selected] {
+    --niche-neon: 1;
+    z-index: 1;
+  }
+
+  /* Solo un disco encendido a la vez: mientras el cursor o el foco están en otro
+     disco, el seleccionado se apaga y vuelve a encenderse al salir. */
+  .niche-shelf:has(.niche-cell:hover, .niche-cell:focus-visible)
+    .niche-cell[data-selected]:not(:hover, :focus-visible) {
+    --niche-neon: 0;
+    z-index: auto;
+  }
+
+  /* El halo exterior vive en la caja de la portada, sin overflow que lo
+     recorte; es más fuerte arriba, donde está el tubo. */
+  .niche {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+    box-shadow:
+      0 0 14px 2px rgb(255 59 47 / calc(0.7 * var(--niche-neon))),
+      0 -18px 50px 6px rgb(255 59 47 / calc(0.45 * var(--niche-neon))),
+      0 0 90px 24px rgb(210 20 15 / calc(0.35 * var(--niche-neon)));
+  }
+
+  .niche-cell:focus-visible .niche {
+    outline: 2px solid var(--color-crema);
+    outline-offset: 3px;
+  }
+
+  .niche-cover {
+    position: absolute;
+    inset: 0;
+    transform-origin: 50% 100%;
+    box-shadow:
+      0 6px 20px 2px rgb(0 0 0 / 0.6),
+      0 1px 3px rgb(0 0 0 / 0.8);
+    transition:
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .niche-cell:hover .niche-cover,
+  .niche-cell:focus-visible .niche-cover {
+    transform: translateY(-1%) scale(1.025);
+    box-shadow:
+      0 10px 26px 4px rgb(0 0 0 / 0.65),
+      0 1px 3px rgb(0 0 0 / 0.8);
+  }
+
+  /* Luz roja sobre la foto. multiply tiñe sin aplanar: conserva luces y
+     sombras, y se suaviza hacia abajo, lejos del tubo. */
+  .niche-cover::before,
+  .niche-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: var(--niche-neon);
+  }
+
+  .niche-cover::before {
+    mix-blend-mode: multiply;
+    background: linear-gradient(
+      to bottom,
+      rgb(255 72 60),
+      rgb(255 110 98) 55%,
+      rgb(255 160 150)
+    );
+  }
+
+  /* Brillo del tubo sobre la parte alta y bordes encendidos, sin línea
+     sólida. */
+  .niche-cover::after {
+    mix-blend-mode: screen;
+    background: linear-gradient(
+      to bottom,
+      rgb(255 59 47 / 0.6),
+      rgb(255 59 47 / 0.15) 40%,
+      transparent 75%
+    );
+    box-shadow:
+      inset 0 2px 0 rgb(255 231 216 / 0.55),
+      inset 0 0 22px 2px rgb(255 59 47 / 0.6),
+      inset 0 24px 40px -16px rgb(255 59 47 / 0.5);
+  }
+
+  /* Tubos de neón sobre y bajo la portada, del ancho de la foto: núcleo
+     blanco cálido y halos rojos. */
+  .niche-led {
+    position: absolute;
+    top: -4px;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      rgb(255 231 216 / 0.6),
+      #ffe7d8 12%,
+      #ffe7d8 88%,
+      rgb(255 231 216 / 0.6)
+    );
+    opacity: var(--niche-neon);
+    box-shadow:
+      0 0 3px 1px #fff1e5,
+      0 0 9px 3px #ff3b2f,
+      0 0 22px 7px rgb(255 59 47 / 0.9),
+      0 0 50px 15px rgb(210 20 15 / 0.55),
+      0 0 90px 25px rgb(150 10 10 / 0.25);
+  }
+
+  .niche-led--bottom {
+    top: unset;
+    bottom: -4px;
+  }
+
+  /* Título y año: siguen a la luz del disco (hover, foco o selección), así
+     se encienden y apagan juntos. Brillo leve. */
+  .niche-label {
+    opacity: var(--niche-neon);
+    text-shadow:
+      0 0 6px rgb(255 59 47 / calc(0.85 * var(--niche-neon))),
+      0 0 18px rgb(255 59 47 / calc(0.55 * var(--niche-neon)));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .niche-cell,
+    .niche-cover {
+      transition: none;
+    }
+
+    .niche-cell:hover .niche-cover,
+    .niche-cell:focus-visible .niche-cover {
+      transform: none;
+    }
+  }
 }
