@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import { Anton, Courier_Prime, Josefin_Sans, Manrope } from "next/font/google";
+import {
+  IntroHeadScript,
+  IntroScreen,
+  SITE_ID,
+} from "@/components/intro-screen";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
@@ -46,11 +51,31 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
+    // suppressHydrationWarning: el script del head marca data-intro antes de
+    // que React hidrate.
     <html
       lang="es-MX"
       className={`${body.variable} ${heading.variable} ${accent.variable} ${typewriter.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <head>
+        <IntroHeadScript />
+        {/* Sin JavaScript no se puede entrar: la intro no se muestra. */}
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html:
+              "<style>#intro-entrada{display:none!important}html{overflow:auto!important}</style>",
+          }}
+        />
+      </head>
+      <body className="flex min-h-full flex-col">
+        <IntroScreen />
+        {/* contents: no altera el flex del body. Queda inert mientras la
+            intro está arriba. */}
+        <div id={SITE_ID} className="contents">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

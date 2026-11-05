@@ -38,6 +38,36 @@ body {
 }
 
 /*
+ * Intro: se oculta desde el primer cuadro si ya se entró en esta visita (el
+ * script del <head> marca data-intro="vista"). Mientras está en pantalla, la
+ * página de atrás no hace scroll.
+ */
+html[data-intro="vista"] #intro-entrada {
+  display: none;
+}
+
+html:not([data-intro="vista"]):has(#intro-entrada) {
+  overflow: hidden;
+}
+
+/* "Click para entrar" pulsa lento; quieto si se pide reducir movimiento. */
+@keyframes intro-pulso {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.intro-pulso {
+  animation: intro-pulso 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-pulso {
+    animation: none;
+  }
+}
+
+/*
  * Cursor: la cara del diablo, con el punto activo en el centro. También en
  * enlaces y botones, que si no vuelven a la mano del sistema. Los campos de
  * texto conservan su cursor. Va fuera de capa para ganarle a cursor-pointer.
