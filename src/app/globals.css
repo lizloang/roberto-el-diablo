@@ -8,6 +8,9 @@
   --color-negro: #151515;
   --color-crema: #f0e9df;
   --color-rojo: #a83d3a;
+  /* Rojo encendido para títulos de trazo fino sobre negro. El acento de la
+     marca sigue siendo --color-rojo. */
+  --color-rojo-vivo: #ff2a1f;
 
   /*
    * Exclusivo de la campaña "Días de Naranja".
@@ -24,6 +27,8 @@
 
   --font-sans: var(--font-body);
   --font-display: var(--font-heading);
+  --font-accent: var(--font-thin);
+  --font-mono: var(--font-typewriter);
 }
 
 body {

@@ -1,10 +1,11 @@
 import { Discography } from "@/components/discography";
 import { Logo } from "@/components/logo";
 import { SiteHeader } from "@/components/site-header";
-import { getAlbums } from "@/sanity/queries";
+import { UpcomingShows } from "@/components/upcoming-shows";
+import { getAlbums, getUpcomingShows } from "@/sanity/queries";
 
 export default async function HomePage() {
-  const albums = await getAlbums();
+  const [albums, shows] = await Promise.all([getAlbums(), getUpcomingShows()]);
 
   return (
     <main>
@@ -19,6 +20,7 @@ export default async function HomePage() {
         </div>
       </section>
       <Discography albums={albums} />
+      <UpcomingShows shows={shows} />
     </main>
   );
 }

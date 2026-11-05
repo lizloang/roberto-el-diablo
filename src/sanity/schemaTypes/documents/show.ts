@@ -1,11 +1,5 @@
 import { defineField, defineType } from "sanity";
-
-const STATUSES = [
-  { title: "Programado", value: "scheduled" },
-  { title: "Agotado", value: "soldOut" },
-  { title: "Pospuesto", value: "postponed" },
-  { title: "Cancelado", value: "cancelled" },
-];
+import { SHOW_STATUSES } from "@/sanity/show-statuses";
 
 export const show = defineType({
   name: "show",
@@ -38,6 +32,12 @@ export const show = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "state",
+      title: "Estado (región)",
+      description: "Opcional, abreviado: N.L., CDMX, Jal.",
+      type: "string",
+    }),
+    defineField({
       name: "country",
       title: "País",
       type: "string",
@@ -48,7 +48,7 @@ export const show = defineType({
       name: "status",
       title: "Estado",
       type: "string",
-      options: { list: STATUSES, layout: "radio" },
+      options: { list: SHOW_STATUSES, layout: "radio" },
       initialValue: "scheduled",
       validation: (rule) => rule.required(),
     }),
@@ -81,7 +81,7 @@ export const show = defineType({
           ? new Date(date).toLocaleDateString("es-MX", { dateStyle: "medium" })
           : null,
         status !== "scheduled"
-          ? STATUSES.find((s) => s.value === status)?.title
+          ? SHOW_STATUSES.find((s) => s.value === status)?.title
           : null,
       ]
         .filter(Boolean)
