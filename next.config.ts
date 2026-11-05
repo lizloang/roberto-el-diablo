@@ -4,7 +4,11 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   images: {
-    remotePatterns: [new URL("https://cdn.sanity.io/images/**")],
+    // Sin `search`: las URLs de Sanity llevan el recorte y el tamaño en la
+    // query (?rect=…&w=…).
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn.sanity.io", pathname: "/images/**" },
+    ],
   },
   turbopack: {
     rules: {
