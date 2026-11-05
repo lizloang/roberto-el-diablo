@@ -1,21 +1,71 @@
 "use client";
 
-import { motion } from "motion/react";
-import { useId } from "react";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  type TargetAndTransition,
+} from "motion/react";
+import { useId, useRef, useSyncExternalStore } from "react";
+import { SITE_ID } from "@/components/intro-screen";
 
 type NeonSignProps = {
   text: string;
   className?: string;
 };
 
+// Apagado: el tubo se adivina apenas.
+const OFF = 0.08;
+
+// Encendido de tubo de neón: titila dos veces y se queda prendido. Menos de
+// tres destellos por segundo (WCAG 2.3.1), que importa en un letrero grande
+// y rojo.
+const FLICKER: TargetAndTransition = {
+  opacity: [OFF, 1, 0.2, 0.2, 1, 0.5, 1],
+  transition: {
+    duration: 1.2,
+    times: [0, 0.15, 0.25, 0.56, 0.69, 0.81, 1],
+    ease: "linear",
+  },
+};
+
+// Con movimiento reducido, sin parpadeo: solo se enciende suave.
+const FADE_IN: TargetAndTransition = {
+  opacity: 1,
+  transition: { duration: 1.4, ease: [0.4, 0, 0.2, 1] },
+};
+
+// ¿El sitio está tapado por la intro? La intro marca <html data-intro> al
+// abrirse y al cerrarse, y deja el sitio inert mientras está arriba.
+function subscribeToIntro(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-intro"],
+  });
+  return () => observer.disconnect();
+}
+
+const isBehindIntro = () => document.getElementById(SITE_ID)?.inert ?? false;
+
 // Letrero de neón: solo el contorno de las letras (fill="none"), dibujado en
 // tres capas del mismo trazo. Abajo un halo rojo amplio y desenfocado, en
 // medio el brillo rojo intenso y arriba el núcleo casi blanco del tubo.
-// Se enciende una vez al entrar en pantalla y se queda encendido.
+// Se enciende una vez al entrar en pantalla (y ya sin la intro encima) y se
+// queda encendido.
 export function NeonSign({ text, className = "" }: NeonSignProps) {
   const id = useId();
   const halo = `${id}-halo`;
   const glow = `${id}-glow`;
+  const ref = useRef<SVGSVGElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+  const behindIntro = useSyncExternalStore(
+    subscribeToIntro,
+    isBehindIntro,
+    () => false,
+  );
+  const reduceMotion = useReducedMotion();
+  const lit = inView && !behindIntro;
 
   const letters = {
     x: "50%",
@@ -30,13 +80,12 @@ export function NeonSign({ text, className = "" }: NeonSignProps) {
 
   return (
     <motion.svg
+      ref={ref}
       aria-hidden
       viewBox="0 0 520 170"
       className={`overflow-visible ${className}`}
-      initial={{ opacity: 0.08 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, amount: 0.6 }}
-      transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1] }}
+      initial={{ opacity: OFF }}
+      animate={lit ? (reduceMotion ? FADE_IN : FLICKER) : { opacity: OFF }}
     >
       <defs>
         <filter id={halo} x="-30%" y="-60%" width="160%" height="220%">

@@ -30,7 +30,7 @@ export function Discography({ albums }: DiscographyProps) {
           <span className="sr-only">Música</span>
           <NeonSign
             text="MÚSICA"
-            className="mx-auto block w-full max-w-sm md:max-w-xl"
+            className="mx-auto block w-full max-w-[15rem] md:max-w-[24rem]"
           />
         </h2>
 
