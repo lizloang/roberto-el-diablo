@@ -1,7 +1,7 @@
 "use client";
 
 import { useReducedMotion } from "motion/react";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatedLogo } from "@/components/animated-logo";
 
 // Se guarda al entrar; con ella la intro no vuelve a salir en esta visita.
@@ -22,6 +22,24 @@ function shouldSkip() {
 
 // Contenedor del sitio, hermano de la intro en el layout.
 export const SITE_ID = "sitio";
+
+// ¿El sitio está tapado por la intro? La intro marca <html data-intro> al
+// abrirse y al cerrarse, y deja el sitio inert mientras está arriba. Sirve
+// para que las animaciones de entrada esperen a que se vea el sitio.
+function subscribeToIntro(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-intro"],
+  });
+  return () => observer.disconnect();
+}
+
+const isBehindIntro = () => document.getElementById(SITE_ID)?.inert ?? false;
+
+export function useBehindIntro() {
+  return useSyncExternalStore(subscribeToIntro, isBehindIntro, () => false);
+}
 
 // Corre en el <head> antes de pintar: si no toca intro, marca
 // <html data-intro="vista"> y el CSS la oculta desde el primer cuadro. En el

@@ -43,6 +43,7 @@ export async function getAlbums(): Promise<Album[]> {
     cover: urlFor(album.cover).width(1200).height(1200).url(),
     coverAlt: album.cover.alt || `Portada de ${album.title}`,
     links: (album.links ?? []).map((link) => ({
+      platform: link.platform,
       label:
         PLATFORMS.find((p) => p.value === link.platform)?.title ??
         link.platform,
