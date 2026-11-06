@@ -1,4 +1,6 @@
 export type AlbumLink = {
+  // Valor de PLATFORMS: "spotify", "appleMusic"…
+  platform: string;
   label: string;
   href: string;
 };
