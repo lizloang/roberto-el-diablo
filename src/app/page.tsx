@@ -7,21 +7,20 @@ import { getAlbums, getUpcomingShows } from "@/sanity/queries";
 
 // Nuevo lanzamiento: lo primero que se ve después de la intro.
 const NEW_RELEASE = {
-  cover: "/images/lanzamientos/la-puerta.jpg",
-  coverAlt:
-    "Los cuatro integrantes de Roberto el Diablo, vestidos de negro y con lentes oscuros, posan en una plaza de ladrillo rojo rodeada de escalones de concreto.",
   eyebrow: "Nuevo álbum",
   kind: "Álbum",
   title: "La Puerta",
-  // Álbum en Sanity del que sale la liga del botón "Escucha aquí".
+  // Álbum en Sanity del que salen la imagen del CD y la liga del play.
   slug: "la-puerta",
 };
 
 export default async function HomePage() {
   const [albums, shows] = await Promise.all([getAlbums(), getUpcomingShows()]);
 
-  // La liga se carga en el Studio, en los enlaces del álbum: Spotify si hay,
-  // si no, la primera. Sin enlaces no se muestra el play.
+  // La imagen del CD es la portada del álbum en el Studio (con su texto
+  // alternativo y recortada en cuadrado según el hotspot). La liga sale de
+  // sus enlaces: Spotify si hay, si no, la primera; sin enlaces no hay play.
+  // Si el álbum no está publicado, no se muestra la sección.
   const { slug, ...release } = NEW_RELEASE;
   const album = albums.find((album) => album.slug === slug);
   const links = album?.links ?? [];
@@ -36,7 +35,14 @@ export default async function HomePage() {
           pantalla y SEO. */}
       <SiteHeader />
       <h1 className="sr-only">{siteConfig.name}</h1>
-      <NewRelease {...release} listenUrl={listenUrl} />
+      {album && (
+        <NewRelease
+          {...release}
+          cover={album.cover}
+          coverAlt={album.coverAlt}
+          listenUrl={listenUrl}
+        />
+      )}
       <Discography albums={albums} />
       <UpcomingShows shows={shows} />
     </main>
