@@ -2,17 +2,15 @@ import { useId } from "react";
 import { PlayFlameIcon } from "@/components/play-flame-icon";
 import { SpinningCd } from "@/components/spinning-cd";
 
-type NewReleaseProps = {
-  cover: string;
-  coverAlt: string;
-  // Rótulo sobre el título: "Nuevo álbum", "Nuevo sencillo"…
-  eyebrow: string;
-  // Tipo de lanzamiento, para el aria-label del play: "Álbum", "Sencillo"…
-  kind: string;
-  title: string;
-  // Sin liga no se muestra el play.
-  listenUrl?: string;
-};
+import type { NewRelease as NewReleaseProps } from "@/types/album";
+
+// Los títulos largos (pasa más con canciones) bajan de tamaño para caber en
+// el disco debajo del anillo.
+function titleSize(title: string) {
+  if (title.length <= 12) return "text-[8cqw]";
+  if (title.length <= 20) return "text-[6cqw]";
+  return "text-[4.5cqw]";
+}
 
 // Primera sección de la portada: el CD del nuevo lanzamiento al centro y,
 // encima y sin girar, el tipo, el título y el play para escucharlo. Todo
@@ -23,6 +21,7 @@ export function NewRelease({
   coverAlt,
   eyebrow,
   kind,
+  listenLabel,
   title,
   listenUrl,
 }: NewReleaseProps) {
@@ -44,7 +43,7 @@ export function NewRelease({
           <div className="absolute inset-x-0 top-[66%] flex flex-col items-center">
             <h2
               id={titleId}
-              className="font-release-title text-[8cqw] leading-none uppercase"
+              className={`max-w-[70cqw] text-center font-release-title leading-none text-balance uppercase ${titleSize(title)}`}
             >
               {title}
             </h2>
@@ -58,11 +57,11 @@ export function NewRelease({
                 href={listenUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`Escuchar el ${kind.toLowerCase()} ${title}`}
+                aria-label={`Escuchar ${kind === "canción" ? "la" : "el"} ${kind} ${title}`}
                 className="group mt-[1.8cqw] flex flex-col items-center gap-[1.2cqw] rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crema"
               >
                 <span className="pl-[0.35em] font-release-info text-[2.4cqw] leading-none tracking-[0.35em] uppercase">
-                  Escúchalo aquí
+                  {listenLabel}
                 </span>
                 {/* Círculo negro (el fondo de la página) con el play de
                     llamas. Crece un poco con el mouse o el foco (no con

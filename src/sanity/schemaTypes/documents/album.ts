@@ -49,6 +49,13 @@ export const album = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "discImage",
+      title: "Imagen para el CD de la portada",
+      description:
+        "Opcional. Se ve girando cuando este es el nuevo lanzamiento; si la dejas vacía se usa la portada.",
+      type: "imageWithAlt",
+    }),
+    defineField({
       name: "description",
       title: "Descripción",
       type: "blockContent",

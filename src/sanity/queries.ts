@@ -5,7 +5,7 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { PLATFORMS } from "@/sanity/platforms";
 import { SHOW_STATUSES } from "@/sanity/show-statuses";
-import type { Album } from "@/types/album";
+import type { Album, NewRelease } from "@/types/album";
 import type { Show, ShowStatus } from "@/types/show";
 
 // Solo lanzamientos con portada: sin ella no hay nada que colgar en la pared.
@@ -50,6 +50,77 @@ export async function getAlbums(): Promise<Album[]> {
       href: link.url,
     })),
   }));
+}
+
+// Nuevo lanzamiento de la portada: el elegido en el Studio (Portada → Nuevo
+// lanzamiento) o, si no hay, el más reciente. Los dos necesitan portada.
+const RELEASE_FIELDS = `
+  "slug": slug.current,
+  title,
+  releaseType,
+  cover,
+  discImage,
+  links[]{ platform, url }
+`;
+
+const NEW_RELEASE_QUERY = defineQuery(`{
+  "featured": *[
+    _type == "album" &&
+    _id == *[_id == "homePage"][0].featuredRelease._ref &&
+    defined(slug.current) && defined(cover.asset)
+  ][0]{ ${RELEASE_FIELDS} },
+  "latest": *[_type == "album" && defined(slug.current) && defined(cover.asset)]
+    | order(releaseDate desc)[0]{ ${RELEASE_FIELDS} }
+}`);
+
+type ReleaseResult = {
+  slug: string;
+  title: string;
+  releaseType: string | null;
+  cover: SanityImageSource & { alt?: string };
+  discImage: (SanityImageSource & { alt?: string; asset?: unknown }) | null;
+  links: { platform: string; url: string }[] | null;
+};
+
+// Textos según el tipo: "canción" es femenino, por eso "Escúchala".
+const RELEASE_COPY: Record<
+  string,
+  Pick<NewRelease, "eyebrow" | "kind" | "listenLabel">
+> = {
+  album: { eyebrow: "Nuevo álbum", kind: "álbum", listenLabel: "Escúchalo aquí" },
+  ep: { eyebrow: "Nuevo EP", kind: "EP", listenLabel: "Escúchalo aquí" },
+  single: {
+    eyebrow: "Nueva canción",
+    kind: "canción",
+    listenLabel: "Escúchala aquí",
+  },
+};
+
+export async function getNewRelease(): Promise<NewRelease | null> {
+  "use cache";
+  cacheLife("minutes");
+
+  const { featured, latest } = await client.fetch<{
+    featured: ReleaseResult | null;
+    latest: ReleaseResult | null;
+  }>(NEW_RELEASE_QUERY);
+  const release = featured ?? latest;
+  if (!release) return null;
+
+  // La imagen del CD si la subieron; si no, la portada del lanzamiento.
+  const image = release.discImage?.asset ? release.discImage : release.cover;
+  const links = release.links ?? [];
+
+  return {
+    title: release.title,
+    ...(RELEASE_COPY[release.releaseType ?? ""] ?? RELEASE_COPY.album),
+    // Recorte cuadrado que respeta el hotspot elegido en el Studio.
+    cover: urlFor(image).width(1200).height(1200).url(),
+    coverAlt: image.alt || `Portada de ${release.title}`,
+    // Spotify si hay; si no, el primer enlace. Sin enlaces no hay play.
+    listenUrl: (links.find((link) => link.platform === "spotify") ?? links[0])
+      ?.url,
+  };
 }
 
 // Fechas de hoy en adelante, la más cercana primero.
