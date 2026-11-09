@@ -3,30 +3,14 @@ import { NewRelease } from "@/components/new-release";
 import { SiteHeader } from "@/components/site-header";
 import { UpcomingShows } from "@/components/upcoming-shows";
 import { siteConfig } from "@/config/site";
-import { getAlbums, getUpcomingShows } from "@/sanity/queries";
-
-// Nuevo lanzamiento: lo primero que se ve después de la intro.
-const NEW_RELEASE = {
-  eyebrow: "Nuevo álbum",
-  kind: "Álbum",
-  title: "La Puerta",
-  // Álbum en Sanity del que salen la imagen del CD y la liga del play.
-  slug: "la-puerta",
-};
+import { getAlbums, getNewRelease, getUpcomingShows } from "@/sanity/queries";
 
 export default async function HomePage() {
-  const [albums, shows] = await Promise.all([getAlbums(), getUpcomingShows()]);
-
-  // La imagen del CD es la portada del álbum en el Studio (con su texto
-  // alternativo y recortada en cuadrado según el hotspot). La liga sale de
-  // sus enlaces: Spotify si hay, si no, la primera; sin enlaces no hay play.
-  // Si el álbum no está publicado, no se muestra la sección.
-  const { slug, ...release } = NEW_RELEASE;
-  const album = albums.find((album) => album.slug === slug);
-  const links = album?.links ?? [];
-  const listenUrl = (
-    links.find((link) => link.platform === "spotify") ?? links[0]
-  )?.href;
+  const [newRelease, albums, shows] = await Promise.all([
+    getNewRelease(),
+    getAlbums(),
+    getUpcomingShows(),
+  ]);
 
   return (
     <main>
@@ -35,12 +19,16 @@ export default async function HomePage() {
           pantalla y SEO. */}
       <SiteHeader />
       <h1 className="sr-only">{siteConfig.name}</h1>
-      {album && (
+      {/* Se elige en el Studio, en "Nuevo lanzamiento". Sin lanzamiento
+          elegido no se muestra. */}
+      {newRelease && (
         <NewRelease
-          {...release}
-          cover={album.cover}
-          coverAlt={album.coverAlt}
-          listenUrl={listenUrl}
+          title={newRelease.title}
+          eyebrow={newRelease.eyebrow}
+          kind={newRelease.kind}
+          cover={newRelease.image}
+          coverAlt={newRelease.imageAlt}
+          listenUrl={newRelease.listenUrl}
         />
       )}
       <Discography albums={albums} />

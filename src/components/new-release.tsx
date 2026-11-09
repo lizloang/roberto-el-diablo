@@ -7,7 +7,7 @@ type NewReleaseProps = {
   coverAlt: string;
   // Rótulo sobre el título: "Nuevo álbum", "Nuevo sencillo"…
   eyebrow: string;
-  // Tipo de lanzamiento, para el aria-label del play: "Álbum", "Sencillo"…
+  // Tipo de lanzamiento, para el aria-label del play: "álbum", "EP"…
   kind: string;
   title: string;
   // Sin liga no se muestra el play.
@@ -58,7 +58,7 @@ export function NewRelease({
                 href={listenUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`Escuchar el ${kind.toLowerCase()} ${title}`}
+                aria-label={`Escuchar el ${kind} ${title}`}
                 className="group mt-[1.8cqw] flex flex-col items-center gap-[1.2cqw] rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crema"
               >
                 <span className="pl-[0.35em] font-release-info text-[2.4cqw] leading-none tracking-[0.35em] uppercase">

@@ -2,6 +2,7 @@ import type { SchemaTypeDefinition } from "sanity";
 import { album } from "./documents/album";
 import { bandInfo } from "./documents/bandInfo";
 import { member } from "./documents/member";
+import { newRelease } from "./documents/newRelease";
 import { pressArticle } from "./documents/pressArticle";
 import { pressKit } from "./documents/pressKit";
 import { product } from "./documents/product";
@@ -12,7 +13,7 @@ import { imageWithAlt } from "./objects/imageWithAlt";
 import { platformLink } from "./objects/platformLink";
 
 // Documentos que deben existir una sola vez; se restringirán al configurar el Studio.
-export const singletonTypes = new Set(["bandInfo", "pressKit"]);
+export const singletonTypes = new Set(["newRelease", "bandInfo", "pressKit"]);
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   // Documentos
@@ -21,6 +22,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   show,
   member,
   product,
+  newRelease,
   bandInfo,
   pressKit,
   pressArticle,

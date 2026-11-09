@@ -1,10 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-
-const RELEASE_TYPES = [
-  { title: "Álbum", value: "album" },
-  { title: "EP", value: "ep" },
-  { title: "Sencillo", value: "single" },
-];
+import { RELEASE_TYPES } from "@/sanity/release-types";
 
 export const album = defineType({
   name: "album",
