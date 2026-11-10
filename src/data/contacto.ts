@@ -36,13 +36,6 @@ export const contactoInicial = {
       handle: "@robertoeldiablomx",
       url: "https://www.tiktok.com/@robertoeldiablomx",
     },
-    // Spotify: se agrega en el Studio cuando haya perfil de artista.
+    spotify: { url: "https://open.spotify.com/artist/26cvfioUoHGNfAjZzaIWIA" },
   },
 };
-
-// Crédito del sitio: no es contenido de la banda, se queda en el código. Si
-// el link queda vacío, el nombre va sin enlace.
-export const credito = {
-  nombre: "Lizbeth López",
-  href: "",
-} as const;
