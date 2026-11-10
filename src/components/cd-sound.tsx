@@ -37,7 +37,8 @@ type AudioGraph = {
 // Sonido del CD del home. Nunca suena sin que se active con el botón. Con
 // el sonido activado: en escritorio suena mientras el mouse está sobre el
 // CD (fade-in y fade-out de 500 ms, retoma donde se quedó); en pantallas
-// táctiles, tocar el CD reproduce o pausa en vez de ir a /musica. Mientras
+// sin hover empieza a sonar al activarlo, y tocar el CD pausa o reanuda en
+// vez de ir a /musica. Mientras
 // suena, el disco se enciende con un halo rojo que late con los graves de
 // la canción. Se detiene al salir de vista, al ocultar la pestaña o al
 // cambiar de página.
@@ -274,6 +275,10 @@ export function CdSound({ src, children }: CdSoundProps) {
     const next = !soundOn;
     setSoundOn(next);
     if (!next) stop();
+    // Sin hover (celular, tablet) no hay forma de "pasar" sobre el CD:
+    // activar el sonido ya lo pone a sonar. El toque en el botón es el
+    // permiso que pide el navegador para reproducir.
+    else if (window.matchMedia("(hover: none)").matches) play();
     try {
       sessionStorage.setItem(STORAGE_KEY, next ? "1" : "0");
     } catch {}
