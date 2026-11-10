@@ -7,6 +7,7 @@ import { PLATFORMS } from "@/sanity/platforms";
 import { RELEASE_NOUNS } from "@/sanity/release-types";
 import { SHOW_STATUSES } from "@/sanity/show-statuses";
 import type { Album, NewRelease } from "@/types/album";
+import type { BandPage, SwappablePhoto } from "@/types/band";
 import type { Show, ShowStatus } from "@/types/show";
 
 // Solo lanzamientos con portada: sin ella no hay nada que colgar en la pared.
@@ -107,6 +108,53 @@ export async function getNewRelease(): Promise<NewRelease | null> {
     // Spotify si hay; si no, el primer enlace. Sin enlaces no hay play.
     listenUrl: (links.find((link) => link.platform === "spotify") ?? links[0])
       ?.url,
+  };
+}
+
+// Presentación de la banda (/banda y la portada): "Historia de la banda".
+const BAND_PAGE_QUERY = defineQuery(`
+  *[_id == "bandInfo"][0]{
+    intro,
+    caption,
+    "collageMain": collageMain[defined(asset)],
+    "collageSecondary": collageSecondary[defined(asset)]
+  }
+`);
+
+type BandImageResult = SanityImageSource & { asset?: unknown; alt?: string };
+
+type BandPageResult = {
+  intro: string | null;
+  caption: string | null;
+  collageMain: BandImageResult[] | null;
+  collageSecondary: BandImageResult[] | null;
+} | null;
+
+// Recorta cada foto a la proporción de su lugar respetando el hotspot (y el
+// recorte) elegidos en el Studio. La primera es la que se ve.
+function toSwappable(
+  images: BandImageResult[] | null,
+  width: number,
+  height: number,
+): SwappablePhoto | null {
+  const [first, ...rest] = (images ?? []).map((image) => ({
+    src: urlFor(image).width(width).height(height).url(),
+    alt: image.alt ?? "",
+  }));
+  return first ? { ...first, alternates: rest } : null;
+}
+
+export async function getBandPage(): Promise<BandPage> {
+  "use cache";
+  cacheLife("minutes");
+
+  const info = await client.fetch<BandPageResult>(BAND_PAGE_QUERY);
+
+  return {
+    intro: info?.intro?.trim() || null,
+    caption: info?.caption?.trim() || null,
+    mainPhoto: toSwappable(info?.collageMain ?? null, 1600, 1200),
+    secondaryPhoto: toSwappable(info?.collageSecondary ?? null, 800, 1000),
   };
 }
 

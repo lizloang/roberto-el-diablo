@@ -1,13 +1,20 @@
+import { BandHero } from "@/components/band-hero";
 import { Discography } from "@/components/discography";
 import { NewRelease } from "@/components/new-release";
 import { SiteHeader } from "@/components/site-header";
 import { UpcomingShows } from "@/components/upcoming-shows";
 import { siteConfig } from "@/config/site";
-import { getAlbums, getNewRelease, getUpcomingShows } from "@/sanity/queries";
+import {
+  getAlbums,
+  getBandPage,
+  getNewRelease,
+  getUpcomingShows,
+} from "@/sanity/queries";
 
 export default async function HomePage() {
-  const [newRelease, albums, shows] = await Promise.all([
+  const [newRelease, band, albums, shows] = await Promise.all([
     getNewRelease(),
+    getBandPage(),
     getAlbums(),
     getUpcomingShows(),
   ]);
@@ -31,6 +38,15 @@ export default async function HomePage() {
           listenUrl={newRelease.listenUrl}
         />
       )}
+      {/* La misma presentación de /banda ("Historia de la banda" en el
+          Studio). */}
+      <BandHero
+        intro={band.intro}
+        caption={band.caption}
+        mainPhoto={band.mainPhoto}
+        secondaryPhoto={band.secondaryPhoto}
+        headingLevel="h2"
+      />
       <Discography albums={albums} />
       <UpcomingShows shows={shows} />
     </main>

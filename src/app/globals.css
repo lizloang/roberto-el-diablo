@@ -34,6 +34,10 @@
      font-release-info, "Nuevo álbum" y "Escúchalo aquí". */
   --font-release-title: var(--font-heading);
   --font-release-info: var(--font-typewriter);
+  /* Letra pixel/mono de la página de la banda (títulos y frases cortas en
+     mayúsculas). Por ahora la máquina de escribir; cambia aquí para usar
+     una pixel. */
+  --font-pixel: var(--font-typewriter);
 }
 
 body {

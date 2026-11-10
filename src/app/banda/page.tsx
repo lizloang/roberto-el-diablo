@@ -1,13 +1,27 @@
 import type { Metadata } from "next";
+import { BandHero } from "@/components/band-hero";
+import { SiteHeader } from "@/components/site-header";
+import { getBandPage } from "@/sanity/queries";
 
 export const metadata: Metadata = {
-  title: "Banda",
+  title: "La banda",
 };
 
-export default function BandaPage() {
+// Sale del Studio, de "Historia de la banda".
+export default async function BandaPage() {
+  const { intro, caption, mainPhoto, secondaryPhoto } = await getBandPage();
+
   return (
     <main>
-      <h1>Banda</h1>
+      <SiteHeader />
+      <BandHero
+        intro={intro}
+        caption={caption}
+        mainPhoto={mainPhoto}
+        secondaryPhoto={secondaryPhoto}
+        headingLevel="h1"
+        preload
+      />
     </main>
   );
 }
