@@ -46,9 +46,12 @@ export function BandHero({
         )}
 
         <div>
+          {/* Mismo estilo que el título "Próximos shows" (ShowsTitle): trazo
+              fino, mayúsculas espaciadas y rojo vivo. Aquí sí puede partirse
+              en dos renglones si no cabe en la columna. */}
           <Heading
             id="banda-hero-title"
-            className="font-pixel text-2xl leading-tight tracking-[0.2em] uppercase md:text-4xl"
+            className="font-accent text-2xl leading-tight tracking-[0.3em] text-rojo-vivo uppercase md:text-[2rem]"
           >
             {siteConfig.name}
           </Heading>
