@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header";
 import { getBandPage } from "@/sanity/queries";
 
 export const metadata: Metadata = {
-  title: "La banda",
+  title: "Nosotros",
 };
 
 // Sale del Studio, de "Historia de la banda".

@@ -49,13 +49,15 @@ export function MobileMenu() {
         hidden={!open}
         className="fixed inset-0 z-40 bg-negro px-5 pt-28"
       >
-        <ul className="flex flex-col gap-6">
+        <ul className="flex flex-col gap-8">
           {siteConfig.nav.map((item) => (
             <li key={item.label}>
+              {/* Misma letra que el menú de escritorio (Manrope en negrita,
+                  mayúsculas espaciadas), más grande para tocarla. */}
               <Link
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="font-display text-5xl uppercase"
+                className="text-2xl font-bold tracking-[0.2em] uppercase"
               >
                 {item.label}
               </Link>
