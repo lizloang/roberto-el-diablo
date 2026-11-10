@@ -3,6 +3,7 @@
 import { motion, useInView, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useRef, type PointerEvent, type ReactNode } from "react";
+import { AlbumLink } from "@/components/album-link";
 import { useBehindIntro } from "@/components/intro-screen";
 
 // Una vuelta cada 18 s; con el mouse encima, cada 8 s.
@@ -21,8 +22,11 @@ type SpinningCdProps = {
   className?: string;
   // Capa quieta encima del disco, centrada (texto, botón). No gira. El
   // disco es un contenedor (@container): usa unidades cqw para que el
-  // contenido escale con él.
+  // contenido escale con él. Deja pasar los clics al disco; lo que deba
+  // poder tocarse lleva pointer-events-auto.
   children?: ReactNode;
+  // Álbum del disco: todo el disco es un enlace a /musica con ese álbum.
+  album?: { slug: string; title: string };
 };
 
 // CD con la portada: la foto llena el disco y gira sin parar. Encima, quietos,
@@ -35,6 +39,7 @@ export function SpinningCd({
   preload = false,
   className = "",
   children,
+  album,
 }: SpinningCdProps) {
   const ref = useRef<HTMLDivElement>(null);
   const discRef = useRef<HTMLDivElement>(null);
@@ -100,8 +105,16 @@ export function SpinningCd({
         className="absolute top-1/2 left-1/2 size-[11%] -translate-1/2 rounded-full bg-negro"
       />
 
+      {album && (
+        <AlbumLink
+          slug={album.slug}
+          aria-label={`${alt}: escuchar ${album.title} en Música`}
+          className="absolute inset-0 rounded-full focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-crema"
+        />
+      )}
+
       {children && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           {children}
         </div>
       )}

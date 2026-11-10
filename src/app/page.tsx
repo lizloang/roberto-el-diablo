@@ -36,6 +36,12 @@ export default async function HomePage() {
           cover={newRelease.image}
           coverAlt={newRelease.imageAlt}
           listenUrl={newRelease.listenUrl}
+          // El disco lleva a /musica con su álbum (si está en la discografía).
+          slug={
+            albums.some((album) => album.slug === newRelease.slug)
+              ? newRelease.slug
+              : undefined
+          }
         />
       )}
       {/* La misma presentación de /banda ("Historia de la banda" en el
@@ -47,6 +53,7 @@ export default async function HomePage() {
         secondaryPhoto={band.secondaryPhoto}
         headingLevel="h2"
       />
+      {/* Cada disco lleva a /musica con su álbum en el reproductor. */}
       <Discography albums={albums} />
       <UpcomingShows shows={shows} />
     </main>

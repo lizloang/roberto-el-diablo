@@ -13,6 +13,8 @@ type NewReleaseProps = {
   title: string;
   // Sin liga no se muestra el play.
   listenUrl?: string;
+  // Slug del lanzamiento: el disco lleva a ese álbum en la sección de música.
+  slug?: string;
 };
 
 // Primera sección de la portada: el CD del nuevo lanzamiento al centro y,
@@ -26,6 +28,7 @@ export function NewRelease({
   kind,
   title,
   listenUrl,
+  slug,
 }: NewReleaseProps) {
   const titleId = useId();
 
@@ -34,7 +37,12 @@ export function NewRelease({
       aria-labelledby={titleId}
       className="flex flex-col items-center px-5 pt-8 pb-24 md:px-16 md:pt-1 md:pb-32"
     >
-      <SpinningCd src={cover} alt={coverAlt} preload>
+      <SpinningCd
+        src={cover}
+        alt={coverAlt}
+        preload
+        album={slug ? { slug, title } : undefined}
+      >
         {/* Toda la información abajo del anillo central; el centro (anillo
             de 30 % y agujero) queda libre. Las posiciones van en % del disco
             y los tamaños en cqw, así todo escala con él. */}
@@ -66,7 +74,7 @@ export function NewRelease({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Escuchar el ${kind} ${title}`}
-                className="group mt-[1.8cqw] flex flex-col items-center gap-[1.2cqw] rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crema"
+                className="group pointer-events-auto mt-[1.8cqw] flex flex-col items-center gap-[1.2cqw] rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crema"
               >
                 <span className="pl-[0.35em] font-release-info text-[2.4cqw] leading-none tracking-[0.35em] uppercase">
                   Escúchalo aquí
