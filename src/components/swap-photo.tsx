@@ -8,7 +8,7 @@ import {
   type PointerEvent,
 } from "react";
 import { BandImage } from "@/components/band-image";
-import type { SwappablePhoto } from "@/data/banda";
+import type { SwappablePhoto } from "@/types/band";
 
 // Cada cuánto cambia la foto mientras el mouse está encima, en ms. El fundido
 // (duration-150 abajo) debe ser más corto que esto.

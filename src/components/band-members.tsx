@@ -1,9 +1,15 @@
 import { BandImage } from "@/components/band-image";
-import { members } from "@/data/banda";
+import type { Member } from "@/types/band";
 
-// Sección #banda: una tarjeta por integrante. Los datos se editan en
-// src/data/banda.ts. El hero baja aquí con su enlace.
-export function BandMembers() {
+type BandMembersProps = {
+  members: Member[];
+};
+
+// Sección #banda: una tarjeta por integrante actual, en su orden. Se editan
+// en el Studio, en "Integrantes". El hero baja aquí con su enlace.
+export function BandMembers({ members }: BandMembersProps) {
+  if (members.length === 0) return null;
+
   return (
     <section
       id="banda"
@@ -19,15 +25,17 @@ export function BandMembers() {
         </h2>
 
         <ul className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-          {members.map((member, index) => (
-            <li key={`${member.photo.src}-${index}`}>
+          {members.map((member) => (
+            <li key={member.id}>
               <article>
                 <div className="relative aspect-4/5 overflow-hidden bg-crema/5">
-                  <BandImage
-                    src={member.photo.src}
-                    alt={member.photo.alt}
-                    sizes="(min-width: 1024px) 260px, (min-width: 640px) 45vw, 90vw"
-                  />
+                  {member.photo && (
+                    <BandImage
+                      src={member.photo.src}
+                      alt={member.photo.alt}
+                      sizes="(min-width: 1024px) 260px, (min-width: 640px) 45vw, 90vw"
+                    />
+                  )}
                 </div>
                 <h3 className="mt-5 font-display text-2xl tracking-wide uppercase">
                   {member.name}
@@ -35,9 +43,11 @@ export function BandMembers() {
                 <p className="mt-1 font-pixel text-xs tracking-[0.25em] text-rojo-vivo uppercase">
                   {member.role}
                 </p>
-                <p className="mt-3 leading-relaxed text-crema/80">
-                  {member.description}
-                </p>
+                {member.description && (
+                  <p className="mt-3 leading-relaxed whitespace-pre-line text-crema/80">
+                    {member.description}
+                  </p>
+                )}
               </article>
             </li>
           ))}
