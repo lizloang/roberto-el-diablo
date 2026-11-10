@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { MusicPlayer, MusicSection } from "@/components/music-section";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getAlbums } from "@/sanity/queries";
 
@@ -15,13 +16,16 @@ export default async function MusicaPage() {
   const albums = await getAlbums();
 
   return (
-    <main>
-      <SiteHeader />
-      {/* MusicSection lee ?album= de la URL; mientras, el reproductor sin
+    <>
+      <main>
+        <SiteHeader />
+        {/* MusicSection lee ?album= de la URL; mientras, el reproductor sin
           álbum elegido. */}
-      <Suspense fallback={<MusicPlayer albums={albums} />}>
-        <MusicSection albums={albums} />
-      </Suspense>
-    </main>
+        <Suspense fallback={<MusicPlayer albums={albums} />}>
+          <MusicSection albums={albums} />
+        </Suspense>
+      </main>
+      <SiteFooter />
+    </>
   );
 }

@@ -24,4 +24,10 @@ export const structure: StructureResolver = (S) =>
         .title("Kit de prensa")
         .id("pressKit")
         .child(S.document().schemaType("pressKit").documentId("pressKit")),
+      S.listItem()
+        .title("Contacto y redes")
+        .id("contactInfo")
+        .child(
+          S.document().schemaType("contactInfo").documentId("contactInfo"),
+        ),
     ]);
