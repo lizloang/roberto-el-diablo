@@ -1,22 +1,20 @@
 "use client";
 
 import { MotionConfig } from "motion/react";
-import { useState } from "react";
 import type { Album } from "@/types/album";
 import { AlbumNiche } from "@/components/album-niche";
 import { NeonSign } from "@/components/neon-sign";
+import { selectAlbum, useSelectedAlbumSlug } from "@/lib/album-selection";
 
 type DiscographyProps = {
   albums: Album[];
 };
 
-// Portadas en la pared: 2 columnas en móvil y tablet chica, 3 desde tablet. Seleccionar un disco solo lo enciende; un segundo clic lo
-// apaga.
+// Portadas en la pared: 2 columnas en móvil y tablet chica, 3 desde tablet.
+// Un clic en un disco lo carga en el reproductor de #musica y baja hasta
+// allá; el disco que está sonando queda encendido.
 export function Discography({ albums }: DiscographyProps) {
-  const [selected, setSelected] = useState<Album | null>(null);
-
-  const toggle = (album: Album) =>
-    setSelected((current) => (current?.slug === album.slug ? null : album));
+  const selectedSlug = useSelectedAlbumSlug();
 
   return (
     <MotionConfig reducedMotion="user">
@@ -41,8 +39,8 @@ export function Discography({ albums }: DiscographyProps) {
                 <li key={album.slug}>
                   <AlbumNiche
                     album={album}
-                    onSelect={toggle}
-                    selected={selected?.slug === album.slug}
+                    onSelect={(album) => selectAlbum(album.slug)}
+                    selected={selectedSlug === album.slug}
                   />
                 </li>
               ))}

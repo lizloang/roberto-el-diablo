@@ -28,6 +28,7 @@ type AlbumResult = {
   title: string;
   releaseDate: string;
   cover: SanityImageSource & { alt?: string };
+  spotifyUrl: string | null;
   links: { platform: string; url: string }[] | null;
 };
 
@@ -52,6 +53,7 @@ export async function getAlbums(): Promise<Album[]> {
         link.platform,
       href: link.url,
     })),
+    spotifyUrl: album.spotifyUrl?.trim() || null,
   }));
 }
 
@@ -62,6 +64,7 @@ const NEW_RELEASE_QUERY = defineQuery(`
     eyebrow,
     discImage,
     release->{
+      "slug": slug.current,
       title,
       releaseType,
       cover,
@@ -76,6 +79,7 @@ type NewReleaseResult = {
   eyebrow: string | null;
   discImage: ImageResult | null;
   release: {
+    slug: string;
     title: string;
     releaseType: string | null;
     cover: ImageResult | null;
@@ -100,6 +104,7 @@ export async function getNewRelease(): Promise<NewRelease | null> {
   const links = release.links ?? [];
 
   return {
+    slug: release.slug,
     title: release.title,
     eyebrow: result.eyebrow?.trim() || `Nuevo ${noun}`,
     kind: noun,
