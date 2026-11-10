@@ -22,11 +22,13 @@ const heading = Anton({
   weight: "400",
 });
 
-// Títulos de trazo fino (Próximos shows): geométrica en peso 200.
+// Títulos de trazo fino (Próximos shows): geométrica en peso 200. El 700
+// es para los títulos en bold (font-bold): el álbum en /musica y el nombre
+// de la banda en la historia. Lo demás se queda en 200.
 const accent = Josefin_Sans({
   variable: "--font-thin",
   subsets: ["latin"],
-  weight: "200",
+  weight: ["200", "700"],
 });
 
 // Máquina de escribir para los datos de las fechas: lista de gira impresa.
