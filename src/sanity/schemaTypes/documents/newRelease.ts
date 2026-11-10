@@ -14,6 +14,11 @@ export const newRelease = defineType({
         "El que va en el CD. De aquí salen el título, la portada y la liga del play (Spotify si hay; si no, el primer enlace). Déjalo vacío para ocultar la sección.",
       type: "reference",
       to: [{ type: "album" }],
+      // Aviso, no error: se puede publicar vacío para ocultar la sección.
+      validation: (rule) =>
+        rule
+          .required()
+          .warning("Sin lanzamiento elegido, el CD no aparece en la portada."),
     }),
     defineField({
       name: "discImage",
