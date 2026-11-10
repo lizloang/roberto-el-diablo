@@ -11,8 +11,8 @@ import { BandImage } from "@/components/band-image";
 import type { SwappablePhoto } from "@/data/banda";
 
 // Cada cuánto cambia la foto mientras el mouse está encima, en ms. El fundido
-// (duration-200 abajo) debe ser más corto que esto.
-const CYCLE_MS = 600;
+// (duration-150 abajo) debe ser más corto que esto.
+const CYCLE_MS = 400;
 
 type SwapPhotoProps = {
   photo: SwappablePhoto;
@@ -110,7 +110,7 @@ export function SwapPhoto({
       hidden={index !== active}
       preload={index === 0 ? preload : undefined}
       loading={index === 0 ? undefined : "eager"}
-      className={`transition-opacity duration-200 ease-out motion-reduce:transition-none ${
+      className={`transition-opacity duration-150 ease-out motion-reduce:transition-none ${
         index === active ? "opacity-100" : "opacity-0"
       }`}
     />

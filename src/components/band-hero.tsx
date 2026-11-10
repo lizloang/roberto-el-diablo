@@ -30,8 +30,9 @@ export function BandHero() {
         {/* Collage. Las medidas van en % del ancho, así la foto chica
             siempre queda dentro de la pantalla: la grande (82 %, 4:3) y la
             chica (40 %, 4:5) pegada abajo a la derecha, encimada en la
-            esquina. El padding de abajo deja lugar a la frase. */}
-        <div className="relative pb-[26%]">
+            esquina. El padding de abajo deja lugar a la frase y decide qué
+            tan abajo queda la chica: más padding, menos encimada. */}
+        <div className="relative pb-[34%]">
           <div className="relative w-[82%]">
             <SwapPhoto
               photo={mainPhoto}
