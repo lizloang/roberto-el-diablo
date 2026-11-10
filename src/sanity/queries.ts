@@ -65,6 +65,7 @@ const NEW_RELEASE_QUERY = defineQuery(`
   *[_id == "newRelease"][0]{
     eyebrow,
     discImage,
+    "audioHomeUrl": audioHome.asset->url,
     release->{
       "slug": slug.current,
       title,
@@ -80,6 +81,7 @@ type ImageResult = SanityImageSource & { asset?: unknown; alt?: string };
 type NewReleaseResult = {
   eyebrow: string | null;
   discImage: ImageResult | null;
+  audioHomeUrl: string | null;
   release: {
     slug: string;
     title: string;
@@ -116,6 +118,8 @@ export async function getNewRelease(): Promise<NewRelease | null> {
     // Spotify si hay; si no, el primer enlace. Sin enlaces no hay play.
     listenUrl: (links.find((link) => link.platform === "spotify") ?? links[0])
       ?.url,
+    // Fragmento que suena con el CD del home; sin audio no hay botón.
+    audioUrl: result.audioHomeUrl ?? undefined,
   };
 }
 
