@@ -92,10 +92,11 @@ export function MusicPlayer({ albums, selectedSlug }: MusicPlayerProps) {
             >
               {current.year}
             </p>
-            {/* Título: como los títulos de álbum del sitio (Anton). */}
+            {/* Título: la letra de "Próximos shows" en bold (mayúsculas
+                espaciadas). */}
             <h2
               aria-live="polite"
-              className={`mt-3 font-display text-4xl leading-[0.95] uppercase md:text-5xl ${pending ? "invisible" : ""}`}
+              className={`mt-3 font-accent text-3xl leading-tight font-bold tracking-[0.3em] uppercase md:text-4xl ${pending ? "invisible" : ""}`}
             >
               {current.title}
             </h2>
