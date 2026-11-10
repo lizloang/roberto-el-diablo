@@ -40,24 +40,37 @@ export const bandHero = {
     alternates: [
       {
         src: "/images/banda/hero-1-alt-1.jpg",
-        alt: "Los cuatro integrantes de pie en una plaza de ladrillo rojo rodeada de escalones de concreto; uno lleva sombrero vaquero y camisa bordada.",
+        alt: "Los cuatro integrantes en un túnel blanco con sus instrumentos: guitarra rosa, baquetas, guitarra roja y bajo azul.",
       },
       {
         src: "/images/banda/hero-1-alt-2.jpg",
+        alt: "Los cuatro integrantes vistos desde arriba, recargados y sentados en un muro de concreto.",
+      },
+      {
+        src: "/images/banda/hero-1-alt-3.jpg",
+        alt: "Los cuatro integrantes de pie en una plaza de ladrillo rojo rodeada de escalones de concreto; uno lleva sombrero vaquero y camisa bordada.",
+      },
+      {
+        src: "/images/banda/hero-1-alt-4.jpg",
+        alt: "Los cuatro integrantes vistos desde abajo, entre dos muros iluminados de naranja, con lentes de cristal rojo.",
+      },
+      {
+        src: "/images/banda/hero-1-alt-5.jpg",
         alt: "Los cuatro integrantes corren hacia la cámara por un túnel blanco, movidos por la velocidad.",
       },
     ],
   } satisfies SwappablePhoto,
 
   // Foto chica, abajo a la derecha, encimada en la esquina de la grande.
-  // Horizontal (4:3). Una alternativa puede repetir una foto de la grande.
+  // Vertical (4:5); se recorta al centro. Una alternativa puede repetir una
+  // foto de la grande.
   secondaryPhoto: {
     src: "/images/banda/hero-2.jpg",
-    alt: "Los cuatro integrantes vistos desde abajo, entre dos muros iluminados de naranja, con lentes de cristal rojo.",
+    alt: "Los cuatro integrantes con sus instrumentos frente a una pared naranja, bajo el letrero de la calle José Ma. Morelos.",
     alternates: [
       {
-        src: "/images/banda/hero-1-alt-1.jpg",
-        alt: "Los cuatro integrantes de pie en una plaza de ladrillo rojo rodeada de escalones de concreto; uno lleva sombrero vaquero y camisa bordada.",
+        src: "/images/banda/hero-2-alt-1.jpg",
+        alt: "Un bajo azul, una guitarra roja con un sombrero vaquero encima, una guitarra amarilla y un tambor recargados en una pared naranja.",
       },
     ],
   } satisfies SwappablePhoto,
@@ -65,7 +78,7 @@ export const bandHero = {
 
 // Sección #banda: una tarjeta por integrante, en este orden. Fotos
 // verticales (4:5). Las de ahora son recortes de la foto de la plaza
-// (hero-1-alt-1.jpg), de izquierda a derecha; cámbialas por retratos
+// (hero-1-alt-3.jpg), de izquierda a derecha; cámbialas por retratos
 // individuales cuando los tengan.
 export const members: Member[] = [
   {
