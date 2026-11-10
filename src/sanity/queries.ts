@@ -18,6 +18,7 @@ const ALBUMS_QUERY = defineQuery(`
       title,
       releaseDate,
       cover,
+      spotifyUrl,
       links[]{ platform, url }
     }
 `);

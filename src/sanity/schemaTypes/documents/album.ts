@@ -1,6 +1,8 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { RELEASE_TYPES } from "@/sanity/release-types";
 
+const SPOTIFY_ALBUM_PREFIX = "https://open.spotify.com/album/";
+
 export const album = defineType({
   name: "album",
   title: "Lanzamiento",
@@ -42,6 +44,20 @@ export const album = defineType({
       title: "Portada",
       type: "imageWithAlt",
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "spotifyUrl",
+      title: "Link de Spotify",
+      description:
+        "En Spotify: … → Compartir → Copiar enlace del álbum. Ejemplo: https://open.spotify.com/album/XXXXXXXX",
+      type: "url",
+      // Opcional; si se llena, tiene que ser el enlace de un álbum.
+      validation: (rule) =>
+        rule.custom((value) =>
+          !value || value.startsWith(SPOTIFY_ALBUM_PREFIX)
+            ? true
+            : "Pega el enlace de un álbum de Spotify (https://open.spotify.com/album/...)",
+        ),
     }),
     defineField({
       name: "description",
