@@ -24,6 +24,18 @@ export default async function BandaPage() {
           headingLevel="h1"
           preload
         />
+        <section aria-label="Video" className="px-5 pb-20 md:px-16 md:pb-28">
+          <div className="mx-auto max-w-5xl">
+            <iframe
+              className="block aspect-video w-full bg-negro"
+              src="https://www.youtube-nocookie.com/embed/tdLzIhiyGYI"
+              title="Video de Roberto el Diablo en YouTube"
+              loading="lazy"
+              allow="encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+            />
+          </div>
+        </section>
       </main>
       <SiteFooter />
     </>
