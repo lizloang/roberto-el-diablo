@@ -36,35 +36,37 @@ export const bandHero = {
   // Foto grande, a la izquierda. Horizontal (4:3).
   mainPhoto: {
     src: "/images/banda/hero-1.jpg",
-    alt: "[DESCRIPCIÓN DE LA FOTO: la banda completa]",
+    alt: "Los cuatro integrantes de Roberto el Diablo, vestidos de negro y con lentes de cristal rojo, sentados en unas escaleras de concreto con un árbol al fondo.",
     alternates: [
       {
         src: "/images/banda/hero-1-alt-1.jpg",
-        alt: "[DESCRIPCIÓN DE LA FOTO]",
+        alt: "Los cuatro integrantes de pie en una plaza de ladrillo rojo rodeada de escalones de concreto; uno lleva sombrero vaquero y camisa bordada.",
       },
       {
         src: "/images/banda/hero-1-alt-2.jpg",
-        alt: "[DESCRIPCIÓN DE LA FOTO]",
+        alt: "Los cuatro integrantes corren hacia la cámara por un túnel blanco, movidos por la velocidad.",
       },
     ],
   } satisfies SwappablePhoto,
 
   // Foto chica, abajo a la derecha, encimada en la esquina de la grande.
-  // Vertical (4:5).
+  // Horizontal (4:3). Una alternativa puede repetir una foto de la grande.
   secondaryPhoto: {
     src: "/images/banda/hero-2.jpg",
-    alt: "[DESCRIPCIÓN DE LA FOTO]",
+    alt: "Los cuatro integrantes vistos desde abajo, entre dos muros iluminados de naranja, con lentes de cristal rojo.",
     alternates: [
       {
-        src: "/images/banda/hero-2-alt-1.jpg",
-        alt: "[DESCRIPCIÓN DE LA FOTO]",
+        src: "/images/banda/hero-1-alt-1.jpg",
+        alt: "Los cuatro integrantes de pie en una plaza de ladrillo rojo rodeada de escalones de concreto; uno lleva sombrero vaquero y camisa bordada.",
       },
     ],
   } satisfies SwappablePhoto,
 };
 
 // Sección #banda: una tarjeta por integrante, en este orden. Fotos
-// verticales (4:5).
+// verticales (4:5). Las de ahora son recortes de la foto de la plaza
+// (hero-1-alt-1.jpg), de izquierda a derecha; cámbialas por retratos
+// individuales cuando los tengan.
 export const members: Member[] = [
   {
     name: "[NOMBRE]",
@@ -72,7 +74,7 @@ export const members: Member[] = [
     description: "[DESCRIPCIÓN]",
     photo: {
       src: "/images/banda/integrante-1.jpg",
-      alt: "[NOMBRE] [DESCRIPCIÓN DE LA FOTO]",
+      alt: "[NOMBRE], con sombrero vaquero negro y camisa negra bordada, en una plaza de ladrillo rojo.",
     },
   },
   {
@@ -81,7 +83,7 @@ export const members: Member[] = [
     description: "[DESCRIPCIÓN]",
     photo: {
       src: "/images/banda/integrante-2.jpg",
-      alt: "[NOMBRE] [DESCRIPCIÓN DE LA FOTO]",
+      alt: "[NOMBRE], de camisa negra sin mangas y brazos cruzados, en una plaza de ladrillo rojo.",
     },
   },
   {
@@ -90,7 +92,7 @@ export const members: Member[] = [
     description: "[DESCRIPCIÓN]",
     photo: {
       src: "/images/banda/integrante-3.jpg",
-      alt: "[NOMBRE] [DESCRIPCIÓN DE LA FOTO]",
+      alt: "[NOMBRE], de camisa negra y manos en la cintura, en una plaza de ladrillo rojo.",
     },
   },
   {
@@ -99,7 +101,7 @@ export const members: Member[] = [
     description: "[DESCRIPCIÓN]",
     photo: {
       src: "/images/banda/integrante-4.jpg",
-      alt: "[NOMBRE] [DESCRIPCIÓN DE LA FOTO]",
+      alt: "[NOMBRE], con barba y camisa negra, frente a un ventanal oscuro.",
     },
   },
 ];

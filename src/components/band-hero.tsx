@@ -28,10 +28,10 @@ export function BandHero() {
 
       <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20">
         {/* Collage. Las medidas van en % del ancho, así la foto chica
-            siempre queda dentro de la pantalla: la grande ocupa el 82 % y
-            la chica (40 %) se pega abajo a la derecha, encimada en la
+            siempre queda dentro de la pantalla: la grande (82 %, 4:3) y la
+            chica (48 %, 4:3) pegada abajo a la derecha, encimada en la
             esquina. El padding de abajo deja lugar a la frase. */}
-        <div className="relative pb-[26%]">
+        <div className="relative pb-[22.5%]">
           <div className="relative w-[82%]">
             <SwapPhoto
               photo={mainPhoto}
@@ -39,16 +39,16 @@ export function BandHero() {
               sizes="(min-width: 1024px) 560px, 82vw"
               className="aspect-4/3 w-full"
             />
-            <p className="absolute top-full left-0 mt-4 w-[66%] font-pixel text-[11px] leading-relaxed tracking-[0.3em] text-crema/80 uppercase md:mt-6 md:text-sm">
+            <p className="absolute top-full left-0 mt-4 w-[58%] font-pixel text-[11px] leading-relaxed tracking-[0.3em] text-crema/80 uppercase md:mt-6 md:text-sm">
               {caption}
             </p>
           </div>
 
-          <div className="absolute right-0 bottom-0 w-[40%] shadow-[0_18px_40px_rgb(0_0_0/0.6)] ring-4 ring-negro md:ring-8">
+          <div className="absolute right-0 bottom-0 w-[48%] shadow-[0_18px_40px_rgb(0_0_0/0.6)] ring-4 ring-negro md:ring-8">
             <SwapPhoto
               photo={secondaryPhoto}
-              sizes="(min-width: 1024px) 280px, 40vw"
-              className="aspect-4/5 w-full"
+              sizes="(min-width: 1024px) 330px, 48vw"
+              className="aspect-4/3 w-full"
             />
           </div>
         </div>
