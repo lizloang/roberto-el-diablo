@@ -3,11 +3,13 @@ import { defineQuery } from "next-sanity";
 import type { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
+import { REDES, contactoInicial } from "@/data/contacto";
 import { PLATFORMS } from "@/sanity/platforms";
 import { RELEASE_NOUNS } from "@/sanity/release-types";
 import { SHOW_STATUSES } from "@/sanity/show-statuses";
 import type { Album, NewRelease } from "@/types/album";
 import type { BandPage, SwappablePhoto } from "@/types/band";
+import type { ContactInfo, ContactLink } from "@/types/contact";
 import type { Show, ShowStatus } from "@/types/show";
 
 // Solo lanzamientos con portada: sin ella no hay nada que colgar en la pared.
@@ -244,4 +246,69 @@ export async function getUpcomingShows(): Promise<Show[]> {
       notes: show.notes,
     };
   });
+}
+
+// Documento único "Contacto y redes": los datos del footer.
+const CONTACT_INFO_QUERY = defineQuery(`
+  *[_id == "contactInfo"][0]{
+    phones,
+    email,
+    mgmtCompany,
+    mgmtContact,
+    mgmtPhone,
+    socials
+  }
+`);
+
+type ContactInfoResult = {
+  phones?: string[] | null;
+  email?: string | null;
+  mgmtCompany?: string | null;
+  mgmtContact?: string | null;
+  mgmtPhone?: string | null;
+  socials?: Partial<
+    Record<string, { url?: string | null; handle?: string | null } | null>
+  > | null;
+};
+
+// "818 275 71 12" → tel:+528182757112. Con 10 dígitos es un número de
+// México sin lada de país; si no, se toma tal cual (ya trae la lada).
+function phoneLink(display: string | null | undefined): ContactLink | null {
+  const text = display?.trim();
+  const digits = text?.replace(/\D/g, "");
+  if (!text || !digits) return null;
+  return {
+    display: text,
+    href: `tel:+${digits.length === 10 ? `52${digits}` : digits}`,
+  };
+}
+
+// Mientras el documento no esté publicado se usan los valores iniciales.
+export async function getContactInfo(): Promise<ContactInfo> {
+  "use cache";
+  cacheLife("minutes");
+
+  const result: ContactInfoResult =
+    (await client.fetch<ContactInfoResult | null>(CONTACT_INFO_QUERY)) ??
+    contactoInicial;
+  const email = result.email?.trim();
+
+  return {
+    telefonos: (result.phones ?? [])
+      .map(phoneLink)
+      .filter((phone): phone is ContactLink => phone !== null),
+    correo: email ? { display: email, href: `mailto:${email}` } : null,
+    management: {
+      empresa: result.mgmtCompany?.trim() ?? "",
+      contacto: result.mgmtContact?.trim() ?? "",
+      telefono: phoneLink(result.mgmtPhone),
+    },
+    redes: REDES.flatMap(({ id, nombre }) => {
+      const red = result.socials?.[id];
+      const href = red?.url?.trim();
+      return href
+        ? [{ id, nombre, usuario: red?.handle?.trim() ?? "", href }]
+        : [];
+    }),
+  };
 }
