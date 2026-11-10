@@ -1,7 +1,6 @@
 import { cacheLife } from "next/cache";
 import { SocialIcon } from "@/components/social-icon";
 import { siteConfig } from "@/config/site";
-import { credito } from "@/data/contacto";
 import { getContactInfo } from "@/sanity/queries";
 
 // Enlaces de texto: pasan al rojo vivo (el acento legible sobre negro) con
@@ -143,21 +142,9 @@ export async function SiteFooter() {
           </ul>
         )}
 
-        <div className="mt-10 space-y-1 text-center text-xs text-crema/60">
-          <p>
-            © <CurrentYear /> {siteConfig.name}
-          </p>
-          <p>
-            Diseño y desarrollo:{" "}
-            {credito.href ? (
-              <a href={credito.href} {...EXTERNAL} className={LINK}>
-                {credito.nombre}
-              </a>
-            ) : (
-              credito.nombre
-            )}
-          </p>
-        </div>
+        <p className="mt-10 text-center text-xs text-crema/60">
+          © <CurrentYear /> {siteConfig.name}
+        </p>
       </div>
     </footer>
   );
