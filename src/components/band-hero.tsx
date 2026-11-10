@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SwapPhoto } from "@/components/swap-photo";
 import { siteConfig } from "@/config/site";
 import type { SwappablePhoto } from "@/types/band";
@@ -10,38 +11,40 @@ type BandHeroProps = {
   caption: string | null;
   mainPhoto: SwappablePhoto | null;
   secondaryPhoto: SwappablePhoto | null;
-  // Sin integrantes no hay a dónde bajar: no se muestra la invitación.
+  // Sin integrantes no hay a dónde ir: no se muestra la invitación.
   hasMembers: boolean;
+  // A dónde lleva la invitación: "#banda" en /banda (scroll suave en la
+  // misma página) o "/banda#banda" desde la portada.
+  membersHref: string;
+  // h1 en /banda; h2 en la portada, que ya tiene su h1.
+  headingLevel: "h1" | "h2";
+  // Precarga la foto grande solo donde es lo primero que se ve (/banda).
+  preload?: boolean;
 };
 
-// Hero de /banda: collage de dos fotos (la chica encimada en la esquina de la
-// grande) y, al lado, la presentación de la banda, que baja a #banda. De
-// fondo, el logo en mosaico como textura. En pantallas chicas todo se apila.
-// Los textos y las fotos se editan en el Studio, en "Historia de la banda";
-// lo que esté vacío no se muestra.
+// Presentación de la banda: collage de dos fotos (la chica encimada en la
+// esquina de la grande) y, al lado, el texto, que lleva a los integrantes. Va
+// arriba en /banda y después del CD en la portada, sobre el negro liso de la
+// página. En pantallas chicas todo se apila. Los textos y las fotos se editan
+// en el Studio, en "Historia de la banda"; lo que esté vacío no se muestra.
 export function BandHero({
   intro,
   caption,
   mainPhoto,
   secondaryPhoto,
   hasMembers,
+  membersHref,
+  headingLevel: Heading,
+  preload = false,
 }: BandHeroProps) {
+  // Dentro de la página basta un <a>; a otra página, Link de Next.
+  const LinkTag = membersHref.startsWith("#") ? "a" : Link;
+
   return (
     <section
       aria-labelledby="banda-hero-title"
-      className="relative isolate overflow-hidden px-5 pt-10 pb-20 md:px-16 md:pt-16 md:pb-28"
+      className="px-5 pt-10 pb-20 md:px-16 md:pt-16 md:pb-28"
     >
-      {/* Textura: el logo blanco repetido a muy baja opacidad. Se desvanece
-          hacia abajo para no cortarse de golpe antes de los integrantes. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-size-[180px] bg-repeat opacity-[0.03]"
-        style={{
-          backgroundImage: `url(${siteConfig.logoSrc})`,
-          maskImage: "linear-gradient(to bottom, black 70%, transparent)",
-        }}
-      />
-
       <div
         className={`mx-auto grid max-w-6xl items-center gap-14 lg:gap-20 ${
           mainPhoto ? "lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]" : ""
@@ -52,22 +55,23 @@ export function BandHero({
             mainPhoto={mainPhoto}
             secondaryPhoto={secondaryPhoto}
             caption={caption}
+            preload={preload}
           />
         )}
 
         {/* Presentación. El párrafo y la invitación forman un solo enlace
-            que baja a los integrantes. */}
+            que lleva a los integrantes. */}
         <div>
-          <h1
+          <Heading
             id="banda-hero-title"
             className="font-pixel text-2xl leading-tight tracking-[0.2em] uppercase md:text-4xl"
           >
             {siteConfig.name}
-          </h1>
+          </Heading>
 
           {hasMembers ? (
-            <a
-              href="#banda"
+            <LinkTag
+              href={membersHref}
               className="group mt-6 block rounded-sm focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-crema md:mt-8"
             >
               {intro && <Intro text={intro} linked />}
@@ -83,7 +87,7 @@ export function BandHero({
                   ↓
                 </span>
               </span>
-            </a>
+            </LinkTag>
           ) : (
             intro && (
               <div className="mt-6 md:mt-8">
@@ -118,10 +122,12 @@ function Collage({
   mainPhoto,
   secondaryPhoto,
   caption,
+  preload,
 }: {
   mainPhoto: SwappablePhoto;
   secondaryPhoto: SwappablePhoto | null;
   caption: string | null;
+  preload: boolean;
 }) {
   const captionClass =
     "font-pixel text-[11px] leading-relaxed tracking-[0.3em] text-crema/80 uppercase md:text-sm";
@@ -131,7 +137,7 @@ function Collage({
       <div className="relative w-[82%]">
         <SwapPhoto
           photo={mainPhoto}
-          preload
+          preload={preload}
           sizes="(min-width: 1024px) 560px, 82vw"
           className="aspect-4/3 w-full"
         />

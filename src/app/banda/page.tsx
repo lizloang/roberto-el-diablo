@@ -22,6 +22,9 @@ export default async function BandaPage() {
         mainPhoto={mainPhoto}
         secondaryPhoto={secondaryPhoto}
         hasMembers={members.length > 0}
+        membersHref="#banda"
+        headingLevel="h1"
+        preload
       />
       <BandMembers members={members} />
     </main>
