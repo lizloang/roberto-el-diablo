@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { FitTitle } from "@/components/fit-title";
 import { PlayFlameIcon } from "@/components/play-flame-icon";
 import { SpinningCd } from "@/components/spinning-cd";
 
@@ -42,12 +43,18 @@ export function NewRelease({
               izquierdo de las frases compensa el tracking tras la última
               letra. */}
           <div className="absolute inset-x-0 top-[66%] flex flex-col items-center">
-            <h2
+            {/* 8cqw si cabe; un título largo se achica hasta 4.5cqw para
+                quedar en un renglón de 76cqw (lo que deja libre el borde
+                del disco a esa altura) y, si aun así no cabe, se parte. */}
+            <FitTitle
               id={titleId}
-              className="font-release-title text-[8cqw] leading-none uppercase"
+              maxSize={8}
+              minSize={4.5}
+              maxWidth={76}
+              className="text-center font-release-title leading-none uppercase"
             >
               {title}
-            </h2>
+            </FitTitle>
 
             <p className="mt-[1.2cqw] pl-[0.35em] font-release-info text-[3.4cqw] leading-none tracking-[0.35em] uppercase">
               {eyebrow}
