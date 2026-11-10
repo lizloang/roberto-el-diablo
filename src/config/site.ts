@@ -10,6 +10,6 @@ export const siteConfig = {
   nav: [
     { label: "Música", href: "/musica" },
     { label: "Shows", href: "/shows" },
-    { label: "La banda", href: "/banda" },
+    { label: "Nosotros", href: "/banda" },
   ],
 } as const;
