@@ -3,17 +3,14 @@ import { SwapPhoto } from "@/components/swap-photo";
 import { siteConfig } from "@/config/site";
 import type { SwappablePhoto } from "@/types/band";
 
-// Texto de la invitación que baja a los integrantes.
-const LINK_LABEL = "Conoce a la banda";
-
 type BandHeroProps = {
   intro: string | null;
   caption: string | null;
   mainPhoto: SwappablePhoto | null;
   secondaryPhoto: SwappablePhoto | null;
-  // Sin integrantes no hay a dónde ir: no se muestra la invitación.
+  // Sin integrantes no hay a dónde ir: la descripción no es enlace.
   hasMembers: boolean;
-  // A dónde lleva la invitación: "#banda" en /banda (scroll suave en la
+  // A dónde lleva la descripción: "#banda" en /banda (scroll suave en la
   // misma página) o "/banda#banda" desde la portada.
   membersHref: string;
   // h1 en /banda; h2 en la portada, que ya tiene su h1.
@@ -59,8 +56,8 @@ export function BandHero({
           />
         )}
 
-        {/* Presentación. El párrafo y la invitación forman un solo enlace
-            que lleva a los integrantes. */}
+        {/* Presentación. La descripción es el enlace a los integrantes
+            (si hay); al pasar el mouse se aclara. */}
         <div>
           <Heading
             id="banda-hero-title"
@@ -69,32 +66,19 @@ export function BandHero({
             {siteConfig.name}
           </Heading>
 
-          {hasMembers ? (
-            <LinkTag
-              href={membersHref}
-              className="group mt-6 block rounded-sm focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-crema md:mt-8"
-            >
-              {intro && <Intro text={intro} linked />}
-              <span className="mt-6 inline-flex items-center gap-3 font-pixel text-sm tracking-[0.25em] text-rojo-vivo uppercase">
-                {/* Subrayado que crece de izquierda a derecha. */}
-                <span className="bg-linear-to-r from-current to-current bg-size-[0%_1px] bg-bottom-left bg-no-repeat pb-1 transition-[background-size] duration-300 group-hover:bg-size-[100%_1px] group-focus-visible:bg-size-[100%_1px] motion-reduce:transition-none">
-                  {LINK_LABEL}
-                </span>
-                <span
-                  aria-hidden
-                  className="transition-transform duration-300 group-hover:translate-y-1 group-focus-visible:translate-y-1 motion-reduce:transition-none"
-                >
-                  ↓
-                </span>
-              </span>
-            </LinkTag>
-          ) : (
-            intro && (
+          {intro &&
+            (hasMembers ? (
+              <LinkTag
+                href={membersHref}
+                className="group mt-6 block rounded-sm focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-crema md:mt-8"
+              >
+                <Intro text={intro} linked />
+              </LinkTag>
+            ) : (
               <div className="mt-6 md:mt-8">
                 <Intro text={intro} />
               </div>
-            )
-          )}
+            ))}
         </div>
       </div>
     </section>
