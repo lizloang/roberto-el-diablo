@@ -13,6 +13,10 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem("pressArticle").title("Notas de prensa"),
       S.divider(),
       S.listItem()
+        .title("Nuevo lanzamiento")
+        .id("newRelease")
+        .child(S.document().schemaType("newRelease").documentId("newRelease")),
+      S.listItem()
         .title("Historia de la banda")
         .id("bandInfo")
         .child(S.document().schemaType("bandInfo").documentId("bandInfo")),

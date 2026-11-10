@@ -4,8 +4,9 @@ import type { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { PLATFORMS } from "@/sanity/platforms";
+import { RELEASE_NOUNS } from "@/sanity/release-types";
 import { SHOW_STATUSES } from "@/sanity/show-statuses";
-import type { Album } from "@/types/album";
+import type { Album, NewRelease } from "@/types/album";
 import type { Show, ShowStatus } from "@/types/show";
 
 // Solo lanzamientos con portada: sin ella no hay nada que colgar en la pared.
@@ -43,12 +44,70 @@ export async function getAlbums(): Promise<Album[]> {
     cover: urlFor(album.cover).width(1200).height(1200).url(),
     coverAlt: album.cover.alt || `Portada de ${album.title}`,
     links: (album.links ?? []).map((link) => ({
+      platform: link.platform,
       label:
         PLATFORMS.find((p) => p.value === link.platform)?.title ??
         link.platform,
       href: link.url,
     })),
   }));
+}
+
+// Documento único "Nuevo lanzamiento": el lanzamiento elegido (solo si está
+// publicado) y, opcionales, la imagen del CD y el rótulo.
+const NEW_RELEASE_QUERY = defineQuery(`
+  *[_id == "newRelease"][0]{
+    eyebrow,
+    discImage,
+    release->{
+      title,
+      releaseType,
+      cover,
+      links[]{ platform, url }
+    }
+  }
+`);
+
+type ImageResult = SanityImageSource & { asset?: unknown; alt?: string };
+
+type NewReleaseResult = {
+  eyebrow: string | null;
+  discImage: ImageResult | null;
+  release: {
+    title: string;
+    releaseType: string | null;
+    cover: ImageResult | null;
+    links: { platform: string; url: string }[] | null;
+  } | null;
+} | null;
+
+// null si no hay lanzamiento elegido o si no tiene ninguna imagen.
+export async function getNewRelease(): Promise<NewRelease | null> {
+  "use cache";
+  cacheLife("minutes");
+
+  const result = await client.fetch<NewReleaseResult>(NEW_RELEASE_QUERY);
+  const release = result?.release;
+  if (!release) return null;
+
+  // La imagen del CD si se cargó; si no, la portada.
+  const image = result.discImage?.asset ? result.discImage : release.cover;
+  if (!image?.asset) return null;
+
+  const noun = RELEASE_NOUNS[release.releaseType ?? ""] ?? "lanzamiento";
+  const links = release.links ?? [];
+
+  return {
+    title: release.title,
+    eyebrow: result.eyebrow?.trim() || `Nuevo ${noun}`,
+    kind: noun,
+    // Recorte cuadrado que respeta el hotspot elegido en el Studio.
+    image: urlFor(image).width(1200).height(1200).url(),
+    imageAlt: image.alt || `Portada de ${release.title}`,
+    // Spotify si hay; si no, el primer enlace. Sin enlaces no hay play.
+    listenUrl: (links.find((link) => link.platform === "spotify") ?? links[0])
+      ?.url,
+  };
 }
 
 // Fechas de hoy en adelante, la más cercana primero.

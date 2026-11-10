@@ -6,8 +6,8 @@ import {
   useReducedMotion,
   type TargetAndTransition,
 } from "motion/react";
-import { useId, useRef, useSyncExternalStore } from "react";
-import { SITE_ID } from "@/components/intro-screen";
+import { useId, useRef } from "react";
+import { useBehindIntro } from "@/components/intro-screen";
 
 type NeonSignProps = {
   text: string;
@@ -35,19 +35,6 @@ const FADE_IN: TargetAndTransition = {
   transition: { duration: 1.4, ease: [0.4, 0, 0.2, 1] },
 };
 
-// ¿El sitio está tapado por la intro? La intro marca <html data-intro> al
-// abrirse y al cerrarse, y deja el sitio inert mientras está arriba.
-function subscribeToIntro(onChange: () => void) {
-  const observer = new MutationObserver(onChange);
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["data-intro"],
-  });
-  return () => observer.disconnect();
-}
-
-const isBehindIntro = () => document.getElementById(SITE_ID)?.inert ?? false;
-
 // Letrero de neón: solo el contorno de las letras (fill="none"), dibujado en
 // tres capas del mismo trazo. Abajo un halo rojo amplio y desenfocado, en
 // medio el brillo rojo intenso y arriba el núcleo casi blanco del tubo.
@@ -59,11 +46,7 @@ export function NeonSign({ text, className = "" }: NeonSignProps) {
   const glow = `${id}-glow`;
   const ref = useRef<SVGSVGElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.6 });
-  const behindIntro = useSyncExternalStore(
-    subscribeToIntro,
-    isBehindIntro,
-    () => false,
-  );
+  const behindIntro = useBehindIntro();
   const reduceMotion = useReducedMotion();
   const lit = inView && !behindIntro;
 
