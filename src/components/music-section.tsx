@@ -3,11 +3,11 @@
 import Image from "next/image";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { AlbumLink } from "@/components/album-link";
-import { MUSIC_SECTION_ID, useSelectedAlbumSlug } from "@/lib/album-selection";
+import { PLAYER_ID, useSelectedAlbumSlug } from "@/lib/album-selection";
 import { spotifyAlbumEmbedUrl } from "@/lib/spotify";
 import type { Album } from "@/types/album";
 
-// Título de la sección: cámbialo aquí.
+// Título de la página: cámbialo aquí.
 const TITLE = "...Música...";
 
 // Alto del reproductor: muestra la lista completa de canciones.
@@ -18,15 +18,27 @@ type MusicSectionProps = {
   albums: Album[];
 };
 
-const noop = () => () => {};
-
-// Sección #musica: el reproductor de Spotify con el álbum elegido y, para
-// cambiar de uno a otro, las portadas de todos. En desktop las portadas van a
-// la izquierda y el reproductor a la derecha; en móvil, el reproductor arriba
-// y las portadas en una fila con scroll horizontal. El álbum elegido sale de
-// la URL (?album=slug); si no hay, el más reciente.
+// Lee el álbum elegido de la URL (?album=slug). Va dentro de un <Suspense>
+// (useSearchParams); de respaldo, <MusicPlayer> sin álbum elegido.
 export function MusicSection({ albums }: MusicSectionProps) {
   const selectedSlug = useSelectedAlbumSlug();
+  return <MusicPlayer albums={albums} selectedSlug={selectedSlug} />;
+}
+
+const noop = () => () => {};
+
+type MusicPlayerProps = MusicSectionProps & {
+  // Slug de ?album=; null: nadie eligió (el más reciente). Sin definir:
+  // todavía no se lee la URL (respaldo), así no se marca ninguno de más.
+  selectedSlug?: string | null;
+};
+
+// Página /musica: el reproductor de Spotify con el álbum elegido y, para
+// cambiar de uno a otro, las portadas de todos. En desktop las portadas van a
+// la izquierda y el reproductor a la derecha; en móvil, el reproductor arriba
+// y las portadas en una fila con scroll horizontal.
+export function MusicPlayer({ albums, selectedSlug }: MusicPlayerProps) {
+  const pending = selectedSlug === undefined;
   // El iframe se monta ya en el navegador, con el álbum de la URL: así no se
   // carga primero el más reciente para luego cambiarlo.
   const mounted = useSyncExternalStore(
@@ -62,35 +74,36 @@ export function MusicSection({ albums }: MusicSectionProps) {
 
   return (
     <section
-      id={MUSIC_SECTION_ID}
       aria-labelledby="musica-title"
-      className="scroll-mt-6 px-5 pt-10 pb-24 text-crema md:px-16 md:pb-32"
+      className="px-5 pt-10 pb-24 text-crema md:px-16 md:pt-16 md:pb-32"
     >
       <div className="mx-auto max-w-6xl">
-        <h2
+        <h1
           id="musica-title"
           className="font-pixel text-xl tracking-[0.3em] uppercase md:text-2xl"
         >
           {TITLE}
-        </h2>
+        </h1>
 
         <div className="mt-10 flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-14">
           {/* Reproductor: primero en el código (arriba en móvil), a la
               derecha en desktop. */}
-          <div className="lg:order-2">
-            <p className="font-pixel text-xs tracking-[0.25em] text-crema/60 uppercase">
+          <div id={PLAYER_ID} className="scroll-mt-6 lg:order-2">
+            <p
+              className={`font-pixel text-xs tracking-[0.25em] text-crema/60 uppercase ${pending ? "invisible" : ""}`}
+            >
               {current.year}
             </p>
-            <h3
+            <h2
               aria-live="polite"
-              className="mt-2 font-display text-3xl leading-none uppercase md:text-4xl"
+              className={`mt-2 font-display text-3xl leading-none uppercase md:text-4xl ${pending ? "invisible" : ""}`}
             >
               {current.title}
-            </h3>
+            </h2>
 
             <div className="mt-6">
-              {embedUrl ? (
-                mounted ? (
+              {embedUrl || pending ? (
+                mounted && !pending && embedUrl ? (
                   <iframe
                     key={embedUrl}
                     src={embedUrl}
@@ -118,7 +131,7 @@ export function MusicSection({ albums }: MusicSectionProps) {
               )}
             </div>
 
-            {embedUrl && current.spotifyUrl && (
+            {!pending && embedUrl && current.spotifyUrl && (
               <a
                 href={current.spotifyUrl}
                 target="_blank"
@@ -142,7 +155,7 @@ export function MusicSection({ albums }: MusicSectionProps) {
             className="relative -mx-5 flex snap-x scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 md:-mx-16 md:scroll-px-16 md:px-16 lg:order-1 lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-4 lg:overflow-visible lg:px-0 lg:pb-0"
           >
             {albums.map((album) => {
-              const active = album.slug === current.slug;
+              const active = !pending && album.slug === current.slug;
               return (
                 <li
                   key={album.slug}
@@ -150,6 +163,7 @@ export function MusicSection({ albums }: MusicSectionProps) {
                 >
                   <AlbumLink
                     slug={album.slug}
+                    inPage
                     aria-current={active ? "true" : undefined}
                     className={`group block rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crema ${
                       active

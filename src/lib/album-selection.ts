@@ -1,50 +1,38 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useSearchParams } from "next/navigation";
 
-// Álbum elegido para el reproductor de la sección #musica. Vive en la URL
-// (?album=slug#musica) para que el enlace se pueda compartir: quien entra
+// Álbum elegido para el reproductor de la página /musica. Vive en la URL
+// (/musica?album=slug) para que el enlace se pueda compartir: quien entra
 // con esa URL llega con ese álbum cargado.
-export const MUSIC_SECTION_ID = "musica";
 const PARAM = "album";
-const EVENT = "album-selection";
+export const MUSIC_PATH = "/musica";
+// id del bloque del reproductor (para volver a él en móvil).
+export const PLAYER_ID = "reproductor";
 
 export function albumHref(slug: string) {
-  return `/?${PARAM}=${encodeURIComponent(slug)}#${MUSIC_SECTION_ID}`;
-}
-
-function readSlug() {
-  return new URLSearchParams(window.location.search).get(PARAM);
-}
-
-function subscribe(onChange: () => void) {
-  // popstate: atrás/adelante del navegador.
-  window.addEventListener("popstate", onChange);
-  window.addEventListener(EVENT, onChange);
-  return () => {
-    window.removeEventListener("popstate", onChange);
-    window.removeEventListener(EVENT, onChange);
-  };
+  return `${MUSIC_PATH}?${PARAM}=${encodeURIComponent(slug)}`;
 }
 
 // null si nadie ha elegido un álbum (el reproductor muestra el más reciente).
+// Usa useSearchParams: el componente debe ir dentro de un <Suspense>.
 export function useSelectedAlbumSlug(): string | null {
-  return useSyncExternalStore(subscribe, readSlug, () => null);
+  return useSearchParams().get(PARAM);
 }
 
-// Carga el álbum en el reproductor: actualiza la URL sin recargar y baja a
-// #musica (sin animación si se pidió reducir movimiento).
+// Dentro de /musica: cambia de álbum sin recargar la página (Next sincroniza
+// pushState con useSearchParams). Si el reproductor quedó arriba fuera de
+// vista (en móvil las portadas van debajo), sube a él; sin animación si se
+// pidió reducir movimiento.
 export function selectAlbum(slug: string) {
-  const url = new URL(window.location.href);
-  url.searchParams.set(PARAM, slug);
-  url.hash = MUSIC_SECTION_ID;
-  if (url.href !== window.location.href) {
-    window.history.pushState(window.history.state, "", url);
-    window.dispatchEvent(new Event(EVENT));
-  }
+  window.history.pushState(null, "", albumHref(slug));
 
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  document
-    .getElementById(MUSIC_SECTION_ID)
-    ?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  const player = document.getElementById(PLAYER_ID);
+  if (player && player.getBoundingClientRect().top < 0) {
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    player.scrollIntoView({
+      behavior: reduce ? "auto" : "smooth",
+      block: "start",
+    });
+  }
 }

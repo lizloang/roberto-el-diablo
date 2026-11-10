@@ -1,16 +1,28 @@
 "use client";
 
+import Link from "next/link";
 import type { ComponentProps, MouseEvent } from "react";
 import { albumHref, selectAlbum } from "@/lib/album-selection";
 
 type AlbumLinkProps = Omit<ComponentProps<"a">, "href"> & {
   slug: string;
+  // true dentro de /musica: cambia de álbum sin navegar. Fuera de /musica
+  // (portada, discografía) lleva a /musica con ese álbum cargado.
+  inPage?: boolean;
 };
 
-// Enlace real a ?album=slug#musica (funciona sin JavaScript y se puede abrir
-// en otra pestaña). Con un clic normal carga el álbum en el reproductor sin
-// recargar la página.
-export function AlbumLink({ slug, onClick, ...props }: AlbumLinkProps) {
+// Enlace real a /musica?album=slug: se puede abrir en otra pestaña o
+// compartir, y funciona sin JavaScript.
+export function AlbumLink({
+  slug,
+  inPage = false,
+  onClick,
+  ...props
+}: AlbumLinkProps) {
+  const href = albumHref(slug);
+
+  if (!inPage) return <Link href={href} onClick={onClick} {...props} />;
+
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(event);
     // Ctrl/Cmd/Shift o clic medio: que el navegador lo abra donde se pidió.
@@ -28,5 +40,5 @@ export function AlbumLink({ slug, onClick, ...props }: AlbumLinkProps) {
     selectAlbum(slug);
   };
 
-  return <a href={albumHref(slug)} onClick={handleClick} {...props} />;
+  return <a href={href} onClick={handleClick} {...props} />;
 }

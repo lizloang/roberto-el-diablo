@@ -1,6 +1,5 @@
 import { BandHero } from "@/components/band-hero";
 import { Discography } from "@/components/discography";
-import { MusicSection } from "@/components/music-section";
 import { NewRelease } from "@/components/new-release";
 import { SiteHeader } from "@/components/site-header";
 import { UpcomingShows } from "@/components/upcoming-shows";
@@ -37,7 +36,7 @@ export default async function HomePage() {
           cover={newRelease.image}
           coverAlt={newRelease.imageAlt}
           listenUrl={newRelease.listenUrl}
-          // El disco lleva al álbum en #musica (si está en la discografía).
+          // El disco lleva a /musica con su álbum (si está en la discografía).
           slug={
             albums.some((album) => album.slug === newRelease.slug)
               ? newRelease.slug
@@ -54,10 +53,8 @@ export default async function HomePage() {
         secondaryPhoto={band.secondaryPhoto}
         headingLevel="h2"
       />
+      {/* Cada disco lleva a /musica con su álbum en el reproductor. */}
       <Discography albums={albums} />
-      {/* Reproductor de Spotify. Las portadas del CD, de la discografía y
-          de esta sección cargan aquí su álbum (?album=slug#musica). */}
-      <MusicSection albums={albums} />
       <UpcomingShows shows={shows} />
     </main>
   );

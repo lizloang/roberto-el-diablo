@@ -21,7 +21,7 @@ export function AlbumNiche({
     <button
       type="button"
       aria-current={selected ? "true" : undefined}
-      aria-label={`${album.coverAlt}: escuchar en la sección de música`}
+      aria-label={`${album.coverAlt}: escuchar en Música`}
       data-selected={selected || undefined}
       onClick={() => onSelect(album)}
       className={`niche-cell group block w-full cursor-pointer text-left outline-none ${className}`}

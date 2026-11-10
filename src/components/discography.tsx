@@ -1,20 +1,21 @@
 "use client";
 
 import { MotionConfig } from "motion/react";
+import { useRouter } from "next/navigation";
 import type { Album } from "@/types/album";
 import { AlbumNiche } from "@/components/album-niche";
 import { NeonSign } from "@/components/neon-sign";
-import { selectAlbum, useSelectedAlbumSlug } from "@/lib/album-selection";
+import { albumHref } from "@/lib/album-selection";
 
 type DiscographyProps = {
   albums: Album[];
 };
 
 // Portadas en la pared: 2 columnas en móvil y tablet chica, 3 desde tablet.
-// Un clic en un disco lo carga en el reproductor de #musica y baja hasta
-// allá; el disco que está sonando queda encendido.
+// Un clic en un disco lleva a /musica con ese álbum en el reproductor; el
+// neón se enciende al pasar el cursor o con el foco.
 export function Discography({ albums }: DiscographyProps) {
-  const selectedSlug = useSelectedAlbumSlug();
+  const router = useRouter();
 
   return (
     <MotionConfig reducedMotion="user">
@@ -39,8 +40,7 @@ export function Discography({ albums }: DiscographyProps) {
                 <li key={album.slug}>
                   <AlbumNiche
                     album={album}
-                    onSelect={(album) => selectAlbum(album.slug)}
-                    selected={selectedSlug === album.slug}
+                    onSelect={(album) => router.push(albumHref(album.slug))}
                   />
                 </li>
               ))}

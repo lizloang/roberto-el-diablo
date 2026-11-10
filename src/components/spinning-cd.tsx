@@ -25,8 +25,7 @@ type SpinningCdProps = {
   // contenido escale con él. Deja pasar los clics al disco; lo que deba
   // poder tocarse lleva pointer-events-auto.
   children?: ReactNode;
-  // Álbum del disco: todo el disco es un enlace que lo carga en la sección
-  // de música (#musica).
+  // Álbum del disco: todo el disco es un enlace a /musica con ese álbum.
   album?: { slug: string; title: string };
 };
 
@@ -109,7 +108,7 @@ export function SpinningCd({
       {album && (
         <AlbumLink
           slug={album.slug}
-          aria-label={`${alt}: escuchar ${album.title} en la sección de música`}
+          aria-label={`${alt}: escuchar ${album.title} en Música`}
           className="absolute inset-0 rounded-full focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-crema"
         />
       )}
