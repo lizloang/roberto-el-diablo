@@ -12,8 +12,10 @@ export type BandPhoto = {
 };
 
 export type SwappablePhoto = BandPhoto & {
-  // Se muestran al pasar el mouse (o con un tap en el celular), una por
-  // vez y en este orden. Vacío: la foto no cambia.
+  // Mientras el mouse está encima (o tras un tap en el celular) la foto pasa
+  // por todas, una tras otra y en este orden; al salir vuelve a la primera.
+  // La velocidad se cambia en CYCLE_MS (src/components/swap-photo.tsx).
+  // Vacío: la foto no cambia.
   alternates: BandPhoto[];
 };
 
@@ -57,6 +59,14 @@ export const bandHero = {
       {
         src: "/images/banda/hero-1-alt-5.jpg",
         alt: "Los cuatro integrantes corren hacia la cámara por un túnel blanco, movidos por la velocidad.",
+      },
+      {
+        src: "/images/banda/hero-1-alt-6.jpg",
+        alt: "Retrato de cerca de los cuatro integrantes frente a una pared blanca, con lentes de cristal rojo.",
+      },
+      {
+        src: "/images/banda/hero-1-alt-7.jpg",
+        alt: "Un bajo azul, una guitarra roja con un sombrero vaquero encima, una guitarra amarilla y un tambor recargados en una pared naranja.",
       },
     ],
   } satisfies SwappablePhoto,

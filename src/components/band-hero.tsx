@@ -44,7 +44,7 @@ export function BandHero() {
             </p>
           </div>
 
-          <div className="absolute right-0 bottom-0 w-[40%] shadow-[0_18px_40px_rgb(0_0_0/0.6)] ring-4 ring-negro md:ring-8">
+          <div className="absolute right-0 bottom-0 w-[40%] shadow-[0_18px_40px_rgb(0_0_0/0.6)]">
             <SwapPhoto
               photo={secondaryPhoto}
               sizes="(min-width: 1024px) 280px, 40vw"
