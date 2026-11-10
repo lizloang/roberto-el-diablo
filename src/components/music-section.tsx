@@ -7,9 +7,6 @@ import { PLAYER_ID, useSelectedAlbumSlug } from "@/lib/album-selection";
 import { spotifyAlbumEmbedUrl } from "@/lib/spotify";
 import type { Album } from "@/types/album";
 
-// Título de la página: cámbialo aquí.
-const TITLE = "...Música...";
-
 // Alto del reproductor: muestra la lista completa de canciones.
 const PLAYER_HEIGHT = 352;
 
@@ -74,29 +71,31 @@ export function MusicPlayer({ albums, selectedSlug }: MusicPlayerProps) {
 
   return (
     <section
+      id="musica"
       aria-labelledby="musica-title"
-      className="px-5 pt-10 pb-24 text-crema md:px-16 md:pt-16 md:pb-32"
+      className="px-5 pt-6 pb-24 text-crema md:px-16 md:pt-8 md:pb-32"
     >
-      <div className="mx-auto max-w-6xl">
-        <h1
-          id="musica-title"
-          className="font-pixel text-xl tracking-[0.3em] uppercase md:text-2xl"
-        >
-          {TITLE}
-        </h1>
+      {/* Encabezado solo para lectores de pantalla. Es el h1 porque la
+          sección es toda la página /musica. */}
+      <h1 id="musica-title" className="sr-only">
+        Música
+      </h1>
 
-        <div className="mt-10 flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-14">
+      <div className="mx-auto max-w-6xl">
+        <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-14">
           {/* Reproductor: primero en el código (arriba en móvil), a la
               derecha en desktop. */}
           <div id={PLAYER_ID} className="scroll-mt-6 lg:order-2">
+            {/* Año: como los metadatos del sitio (detalle del álbum). */}
             <p
-              className={`font-pixel text-xs tracking-[0.25em] text-crema/60 uppercase ${pending ? "invisible" : ""}`}
+              className={`text-xs font-bold tracking-[0.2em] text-crema/60 ${pending ? "invisible" : ""}`}
             >
               {current.year}
             </p>
+            {/* Título: como los títulos de álbum del sitio (Anton). */}
             <h2
               aria-live="polite"
-              className={`mt-2 font-display text-3xl leading-none uppercase md:text-4xl ${pending ? "invisible" : ""}`}
+              className={`mt-3 font-display text-4xl leading-[0.95] uppercase md:text-5xl ${pending ? "invisible" : ""}`}
             >
               {current.title}
             </h2>
@@ -123,28 +122,13 @@ export function MusicPlayer({ albums, selectedSlug }: MusicPlayerProps) {
                 )
               ) : (
                 <div
-                  className="flex items-center justify-center rounded-[12px] border border-dashed border-crema/20 px-6 text-center font-pixel text-sm tracking-[0.25em] text-crema/70 uppercase"
+                  className="flex items-center justify-center rounded-[12px] border border-dashed border-crema/20 px-6 text-center text-xs font-bold tracking-[0.2em] text-crema/70 uppercase"
                   style={{ height: PLAYER_HEIGHT }}
                 >
                   Próximamente en Spotify
                 </div>
               )}
             </div>
-
-            {!pending && embedUrl && current.spotifyUrl && (
-              <a
-                href={current.spotifyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group mt-5 inline-flex items-center gap-2 rounded-sm font-pixel text-sm tracking-[0.25em] text-rojo-vivo uppercase focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crema"
-              >
-                <span className="underline-offset-6 group-hover:underline">
-                  Escuchar en Spotify
-                </span>
-                <span aria-hidden>→</span>
-                <span className="sr-only">(se abre en una pestaña nueva)</span>
-              </a>
-            )}
           </div>
 
           {/* Portadas: fila con scroll horizontal en móvil, rejilla de 3 en
@@ -165,7 +149,7 @@ export function MusicPlayer({ albums, selectedSlug }: MusicPlayerProps) {
                     slug={album.slug}
                     inPage
                     aria-current={active ? "true" : undefined}
-                    className={`group block rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crema ${
+                    className={`block rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crema ${
                       active
                         ? ""
                         : "opacity-55 hover:opacity-100 focus-visible:opacity-100"
@@ -186,13 +170,14 @@ export function MusicPlayer({ albums, selectedSlug }: MusicPlayerProps) {
                       {active && (
                         <span
                           aria-hidden
-                          className="absolute inset-x-0 bottom-0 bg-black/75 py-1 text-center font-pixel text-[10px] tracking-[0.2em] uppercase"
+                          className="absolute inset-x-0 bottom-0 bg-black/75 py-1 text-center text-[0.625rem] font-bold tracking-[0.2em] uppercase"
                         >
                           ▶ Sonando
                         </span>
                       )}
                     </span>
-                    <span className="mt-2 block truncate font-pixel text-[11px] tracking-[0.15em] text-crema/80 uppercase">
+                    {/* Etiqueta: como las del sitio (menú, «Escuchar»). */}
+                    <span className="mt-2 block truncate text-[0.625rem] font-bold tracking-[0.2em] text-crema/80 uppercase sm:text-xs">
                       {album.title}
                     </span>
                   </AlbumLink>
