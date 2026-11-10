@@ -31,4 +31,6 @@ export type NewRelease = {
   image: string;
   imageAlt: string;
   listenUrl?: string;
+  // Fragmento de audio del CD del home (Sanity: "Nuevo lanzamiento").
+  audioUrl?: string;
 };

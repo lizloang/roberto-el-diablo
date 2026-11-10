@@ -38,6 +38,7 @@ export default async function HomePage() {
             cover={newRelease.image}
             coverAlt={newRelease.imageAlt}
             listenUrl={newRelease.listenUrl}
+            audioUrl={newRelease.audioUrl}
             // El disco lleva a /musica con su álbum (si está en la discografía).
             slug={
               albums.some((album) => album.slug === newRelease.slug)

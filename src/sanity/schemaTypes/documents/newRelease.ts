@@ -34,6 +34,14 @@ export const newRelease = defineType({
         'Opcional. Va debajo del título, p. ej. "Nuevo álbum". Si lo dejas vacío se arma con el tipo del lanzamiento.',
       type: "string",
     }),
+    defineField({
+      name: "audioHome",
+      title: "Audio del CD del home",
+      description:
+        "Fragmento de 20–30 segundos en MP3 que suena al pasar el mouse por el CD de la página de inicio.",
+      type: "file",
+      options: { accept: "audio/mpeg,audio/mp3" },
+    }),
   ],
   preview: {
     select: { title: "release.title", media: "release.cover" },
