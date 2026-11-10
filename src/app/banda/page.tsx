@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { BandHero } from "@/components/band-hero";
-import { BandMembers } from "@/components/band-members";
 import { SiteHeader } from "@/components/site-header";
 import { getBandPage } from "@/sanity/queries";
 
@@ -8,10 +7,9 @@ export const metadata: Metadata = {
   title: "La banda",
 };
 
-// Todo sale del Studio: "Historia de la banda" (hero) e "Integrantes".
+// Sale del Studio, de "Historia de la banda".
 export default async function BandaPage() {
-  const { intro, caption, mainPhoto, secondaryPhoto, members } =
-    await getBandPage();
+  const { intro, caption, mainPhoto, secondaryPhoto } = await getBandPage();
 
   return (
     <main>
@@ -21,12 +19,9 @@ export default async function BandaPage() {
         caption={caption}
         mainPhoto={mainPhoto}
         secondaryPhoto={secondaryPhoto}
-        hasMembers={members.length > 0}
-        membersHref="#banda"
         headingLevel="h1"
         preload
       />
-      <BandMembers members={members} />
     </main>
   );
 }

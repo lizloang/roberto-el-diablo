@@ -52,12 +52,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     // suppressHydrationWarning: el script del head marca data-intro antes de
-    // que React hidrate. data-scroll-behavior: el scroll suave de globals.css
-    // es solo para enlaces dentro de la página; al cambiar de página Next
-    // salta arriba sin animar.
+    // que React hidrate.
     <html
       lang="es-MX"
-      data-scroll-behavior="smooth"
       className={`${body.variable} ${heading.variable} ${accent.variable} ${typewriter.variable} h-full antialiased`}
       suppressHydrationWarning
     >

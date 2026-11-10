@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { SwapPhoto } from "@/components/swap-photo";
 import { siteConfig } from "@/config/site";
 import type { SwappablePhoto } from "@/types/band";
@@ -8,11 +7,6 @@ type BandHeroProps = {
   caption: string | null;
   mainPhoto: SwappablePhoto | null;
   secondaryPhoto: SwappablePhoto | null;
-  // Sin integrantes no hay a dónde ir: la descripción no es enlace.
-  hasMembers: boolean;
-  // A dónde lleva la descripción: "#banda" en /banda (scroll suave en la
-  // misma página) o "/banda#banda" desde la portada.
-  membersHref: string;
   // h1 en /banda; h2 en la portada, que ya tiene su h1.
   headingLevel: "h1" | "h2";
   // Precarga la foto grande solo donde es lo primero que se ve (/banda).
@@ -20,23 +14,18 @@ type BandHeroProps = {
 };
 
 // Presentación de la banda: collage de dos fotos (la chica encimada en la
-// esquina de la grande) y, al lado, el texto, que lleva a los integrantes. Va
-// arriba en /banda y después del CD en la portada, sobre el negro liso de la
-// página. En pantallas chicas todo se apila. Los textos y las fotos se editan
-// en el Studio, en "Historia de la banda"; lo que esté vacío no se muestra.
+// esquina de la grande) y, al lado, el nombre y la descripción. Va arriba en
+// /banda y después del CD en la portada, sobre el negro liso de la página. En
+// pantallas chicas todo se apila. Los textos y las fotos se editan en el
+// Studio, en "Historia de la banda"; lo que esté vacío no se muestra.
 export function BandHero({
   intro,
   caption,
   mainPhoto,
   secondaryPhoto,
-  hasMembers,
-  membersHref,
   headingLevel: Heading,
   preload = false,
 }: BandHeroProps) {
-  // Dentro de la página basta un <a>; a otra página, Link de Next.
-  const LinkTag = membersHref.startsWith("#") ? "a" : Link;
-
   return (
     <section
       aria-labelledby="banda-hero-title"
@@ -56,8 +45,6 @@ export function BandHero({
           />
         )}
 
-        {/* Presentación. La descripción es el enlace a los integrantes
-            (si hay); al pasar el mouse se aclara. */}
         <div>
           <Heading
             id="banda-hero-title"
@@ -66,34 +53,14 @@ export function BandHero({
             {siteConfig.name}
           </Heading>
 
-          {intro &&
-            (hasMembers ? (
-              <LinkTag
-                href={membersHref}
-                className="group mt-6 block rounded-sm focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-crema md:mt-8"
-              >
-                <Intro text={intro} linked />
-              </LinkTag>
-            ) : (
-              <div className="mt-6 md:mt-8">
-                <Intro text={intro} />
-              </div>
-            ))}
+          {intro && (
+            <p className="mt-6 text-lg leading-relaxed whitespace-pre-line text-crema/90 md:mt-8 md:text-xl">
+              {intro}
+            </p>
+          )}
         </div>
       </div>
     </section>
-  );
-}
-
-function Intro({ text, linked = false }: { text: string; linked?: boolean }) {
-  return (
-    <p
-      className={`text-lg leading-relaxed whitespace-pre-line text-crema/90 md:text-xl ${
-        linked ? "transition-colors duration-300 group-hover:text-crema" : ""
-      }`}
-    >
-      {text}
-    </p>
   );
 }
 

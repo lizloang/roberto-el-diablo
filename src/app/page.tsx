@@ -39,14 +39,12 @@ export default async function HomePage() {
         />
       )}
       {/* La misma presentación de /banda ("Historia de la banda" en el
-          Studio); la invitación lleva a los integrantes de /banda. */}
+          Studio). */}
       <BandHero
         intro={band.intro}
         caption={band.caption}
         mainPhoto={band.mainPhoto}
         secondaryPhoto={band.secondaryPhoto}
-        hasMembers={band.members.length > 0}
-        membersHref="/banda#banda"
         headingLevel="h2"
       />
       <Discography albums={albums} />

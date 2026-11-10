@@ -111,44 +111,24 @@ export async function getNewRelease(): Promise<NewRelease | null> {
   };
 }
 
-// Página /banda: el hero sale de "Historia de la banda" y las tarjetas, de
-// los integrantes actuales en su orden.
+// Presentación de la banda (/banda y la portada): "Historia de la banda".
 const BAND_PAGE_QUERY = defineQuery(`
-  {
-    "info": *[_id == "bandInfo"][0]{
-      intro,
-      caption,
-      "collageMain": collageMain[defined(asset)],
-      "collageSecondary": collageSecondary[defined(asset)]
-    },
-    "members": *[_type == "member" && isActive != false]
-      | order(coalesce(order, 999) asc, name asc) {
-        _id,
-        name,
-        role,
-        bio,
-        photo
-      }
+  *[_id == "bandInfo"][0]{
+    intro,
+    caption,
+    "collageMain": collageMain[defined(asset)],
+    "collageSecondary": collageSecondary[defined(asset)]
   }
 `);
 
 type BandImageResult = SanityImageSource & { asset?: unknown; alt?: string };
 
 type BandPageResult = {
-  info: {
-    intro: string | null;
-    caption: string | null;
-    collageMain: BandImageResult[] | null;
-    collageSecondary: BandImageResult[] | null;
-  } | null;
-  members: {
-    _id: string;
-    name: string;
-    role: string;
-    bio: string | null;
-    photo: BandImageResult | null;
-  }[];
-};
+  intro: string | null;
+  caption: string | null;
+  collageMain: BandImageResult[] | null;
+  collageSecondary: BandImageResult[] | null;
+} | null;
 
 // Recorta cada foto a la proporción de su lugar respetando el hotspot (y el
 // recorte) elegidos en el Studio. La primera es la que se ve.
@@ -168,25 +148,13 @@ export async function getBandPage(): Promise<BandPage> {
   "use cache";
   cacheLife("minutes");
 
-  const { info, members } = await client.fetch<BandPageResult>(BAND_PAGE_QUERY);
+  const info = await client.fetch<BandPageResult>(BAND_PAGE_QUERY);
 
   return {
     intro: info?.intro?.trim() || null,
     caption: info?.caption?.trim() || null,
     mainPhoto: toSwappable(info?.collageMain ?? null, 1600, 1200),
     secondaryPhoto: toSwappable(info?.collageSecondary ?? null, 800, 1000),
-    members: members.map((member) => ({
-      id: member._id,
-      name: member.name,
-      role: member.role,
-      description: member.bio?.trim() || null,
-      photo: member.photo?.asset
-        ? {
-            src: urlFor(member.photo).width(800).height(1000).url(),
-            alt: member.photo.alt ?? member.name,
-          }
-        : null,
-    })),
   };
 }
 

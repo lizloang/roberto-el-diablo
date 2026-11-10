@@ -40,15 +40,6 @@
   --font-pixel: var(--font-typewriter);
 }
 
-/* Scroll suave en enlaces dentro de la página (#banda), solo si no se pide
-   reducir movimiento. Entre páginas Next lo apaga: data-scroll-behavior en
-   el <html> del layout. */
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
 body {
   background: var(--color-background);
   color: var(--color-foreground);
