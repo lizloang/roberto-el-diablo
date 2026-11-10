@@ -1,3 +1,8 @@
+"use client";
+
+import { motion, useInView, useReducedMotion } from "motion/react";
+import { useRef } from "react";
+import { useBehindIntro } from "@/components/intro-screen";
 import { SwapPhoto } from "@/components/swap-photo";
 import { siteConfig } from "@/config/site";
 import type { SwappablePhoto } from "@/types/band";
@@ -83,12 +88,26 @@ function Collage({
   caption: string | null;
   preload: boolean;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.2 });
+  const behindIntro = useBehindIntro();
+  const reduceMotion = useReducedMotion();
+  const shown = reduceMotion || (inView && !behindIntro);
+  const transition = {
+    duration: reduceMotion ? 0 : 1.3,
+    ease: [0.2, 0.75, 0.25, 1] as const,
+  };
   const captionClass =
     "font-pixel text-[11px] leading-relaxed tracking-[0.3em] text-crema/80 uppercase md:text-sm";
 
   return (
-    <div className={`relative ${secondaryPhoto ? "pb-[34%]" : ""}`}>
-      <div className="relative w-[82%]">
+    <div ref={ref} className={`relative ${secondaryPhoto ? "pb-[34%]" : ""}`}>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={shown ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+        transition={transition}
+        className="relative w-[82%]"
+      >
         <SwapPhoto
           photo={mainPhoto}
           preload={preload}
@@ -104,16 +123,25 @@ function Collage({
             {caption}
           </p>
         )}
-      </div>
+      </motion.div>
 
       {secondaryPhoto && (
-        <div className="absolute right-0 bottom-0 w-[40%] shadow-[0_18px_40px_rgb(0_0_0/0.6)]">
+        <motion.div
+          initial={{ opacity: 0, y: 65, rotate: 5 }}
+          animate={
+            shown
+              ? { opacity: 1, y: 0, rotate: 0 }
+              : { opacity: 0, y: 65, rotate: 5 }
+          }
+          transition={{ ...transition, delay: reduceMotion ? 0 : 0.25 }}
+          className="absolute right-0 bottom-0 w-[40%] shadow-[0_18px_40px_rgb(0_0_0/0.6)]"
+        >
           <SwapPhoto
             photo={secondaryPhoto}
             sizes="(min-width: 1024px) 280px, 40vw"
             className="aspect-4/5 w-full"
           />
-        </div>
+        </motion.div>
       )}
     </div>
   );
